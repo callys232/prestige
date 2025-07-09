@@ -76,7 +76,7 @@ const Programs = () => {
         <div className="text-left">
           <Link
             href="/about"
-            className="inline-block mt-4 px-6 py-3 border border-[#1F5C8E] rounded hover:bg-white hover:text-[#1F5C8E] dark:hover:bg-white dark:hover:text-black transition"
+            className="inline-block mt-4 px-6 py-3 border border-[#1F5C8E] rounded hover:bg-white hover:text-[#1F5C8E] dark:hover:bg-white dark:hover:text-[#1F5C8E] transition"
           >
             Read More
           </Link>

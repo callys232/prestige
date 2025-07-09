@@ -6,6 +6,7 @@ import Link from "next/link";
 const NavBar = () => {
   const navItems = ["About Us", "Gallery", "Classes", "Contact"];
   const [isClicked, setIsClicked] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleClick = () => {
     setIsClicked(true);
@@ -14,8 +15,8 @@ const NavBar = () => {
 
   return (
     <nav className="w-full bg-white border-b-2 border-blue-700 px-2 py-3">
-      <div className="flex items-center justify-between px-8 py-4">
-        {/* Left: Login/Signup Button */}
+      <div className="flex items-center justify-between px-4 md:px-8 py-4">
+        {/* Login/Signup */}
         <div>
           <Link
             href="/Profile"
@@ -30,8 +31,36 @@ const NavBar = () => {
           </Link>
         </div>
 
-        {/* Right: Navigation Links */}
-        <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[#0B56A3] font-bold text-xl uppercase">
+        {/* Mobile Hamburger */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-[#0652A6] focus:outline-none"
+        >
+          <svg
+            className="w-7 h-7"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            {menuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
+        </button>
+
+        {/* Desktop Navigation */}
+        <ul className="hidden md:flex flex-wrap gap-x-6 gap-y-2 text-[#0B56A3] font-bold text-xl uppercase">
           {navItems.map((item) => (
             <li key={item}>
               <a
@@ -46,6 +75,23 @@ const NavBar = () => {
           ))}
         </ul>
       </div>
+
+      {/* Mobile Nav Links */}
+      {menuOpen && (
+        <ul className="md:hidden flex flex-col items-start px-6 pb-4 gap-3 text-[#0B56A3] font-bold text-lg uppercase">
+          {navItems.map((item) => (
+            <li key={item} className="w-full">
+              <a
+                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                onClick={() => setMenuOpen(false)}
+                className="block w-full py-2 px-2 rounded hover:bg-blue-950 hover:text-white transition"
+              >
+                {item}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </nav>
   );
 };
