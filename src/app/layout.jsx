@@ -1,6 +1,5 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "../app/context/themeContect";
+import { ThemeProvider } from "./context/themeContect";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,16 +14,12 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Prestige Gym",
   description: "Train with purpose, transform with pride.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body

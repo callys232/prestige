@@ -30,7 +30,7 @@ const HeroSection = () => {
       </div>
 
       {/* Centered Content */}
-      <div className="relative z-10 max-w-[90vw] md:max-w-md mx-auto text-center space-y-6">
+      <div className="relative z-10 max-w-[90vw] md:max-w-md mx-auto text-center space-y-4">
         <p className="uppercase text-sm md:text-base font-medium tracking-wide">
           Train with purpose, transform with pride
         </p>
@@ -45,9 +45,9 @@ const HeroSection = () => {
           <span>Prestige</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+        <div className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
           <button
-            className="bg-[#1F5C8E] sm:bg-white text-white sm:text-[#1F5C8E] font-semibold px-8 py-3 rounded-md text-sm sm:text-base uppercase 
+            className="bg-[#1F5C8E] sm:bg-white text-white sm:text-[#1F5C8E] font-semibold px-6 py-3 rounded-md text-sm sm:text-base uppercase 
             hover:bg-[#174a71] sm:hover:bg-gray-100 
             active:bg-[#174a71] sm:active:bg-gray-200 
             active:scale-95 active:shadow-inner 
@@ -57,16 +57,17 @@ const HeroSection = () => {
             Join Now
           </button>
 
-          <button
-            className="border border-white sm:border-[#1F5C8E] text-white sm:text-[#1F5C8E] px-8 py-3 rounded-md text-sm sm:text-base uppercase 
-            hover:bg-white hover:text-[#1F5C8E] 
-            active:bg-white active:text-[#1F5C8E] 
-            active:scale-95 active:shadow-inner 
-            focus:bg-white focus:text-[#1F5C8E] focus:outline-none 
-            transition duration-200 ease-out"
-          >
-            Book a Tour
-          </button>
+<button
+  className="border border-white sm:border-[#1F5C8E] text-white px-8 py-3 rounded-md text-sm sm:text-base uppercase 
+  animate-fadeUp
+  hover:bg-white hover:text-[#1F5C8E] hover:animate-pulse
+  active:bg-white active:text-white active:scale-95 active:shadow-inner
+  focus:bg-white focus:text-[#1F5C8E] focus:outline-none
+  transition duration-200 ease-out"
+>
+  Book a Tour
+</button>
+
         </div>
       </div>
     </section>

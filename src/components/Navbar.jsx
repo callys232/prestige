@@ -2,9 +2,18 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const NavBar = () => {
-  const navItems = ["About Us", "Gallery", "Classes", "Contact"];
+  const pathname = usePathname();
+
+  const navItems = [
+    { label: "About Us", href: "/about" },
+    { label: "Gallery", href: "/gallery" },
+    { label: "Classes", href: "/classes" },
+    { label: "Contact", href: "/contact" },
+  ];
+
   const [isClicked, setIsClicked] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -35,6 +44,7 @@ const NavBar = () => {
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden text-[#0652A6] focus:outline-none"
+          aria-label="Toggle navigation menu"
         >
           <svg
             className="w-7 h-7"
@@ -61,16 +71,18 @@ const NavBar = () => {
 
         {/* Desktop Navigation */}
         <ul className="hidden md:flex flex-wrap gap-x-6 gap-y-2 text-[#0B56A3] font-bold text-xl uppercase">
-          {navItems.map((item) => (
-            <li key={item}>
-              <a
-                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
-                className="relative inline-block px-2 py-1 transition duration-300 ease-in-out hover:text-white hover:bg-blue-950 hover:rounded-md hover:scale-105"
+          {navItems.map(({ label, href }) => (
+            <li key={label}>
+              <Link
+                href={href}
+                className={`relative inline-block px-2 py-1 transition duration-300 ease-in-out hover:text-white hover:bg-blue-950 hover:rounded-md hover:scale-105 ${
+                  pathname === href ? "text-white bg-blue-950 rounded-md" : ""
+                }`}
               >
                 <span className="after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full">
-                  {item}
+                  {label}
                 </span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -78,16 +90,20 @@ const NavBar = () => {
 
       {/* Mobile Nav Links */}
       {menuOpen && (
-        <ul className="md:hidden flex flex-col items-start px-6 pb-4 gap-3 text-[#0B56A3] font-bold text-lg uppercase">
-          {navItems.map((item) => (
-            <li key={item} className="w-full">
-              <a
-                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+        <ul className="md:hidden flex flex-col items-start px-6 pb-4 gap-3 text-[#0B56A3] font-bold text-lg uppercase animate-slideDown">
+          {navItems.map(({ label, href }) => (
+            <li key={label} className="w-full">
+              <Link
+                href={href}
                 onClick={() => setMenuOpen(false)}
-                className="block w-full py-2 px-2 rounded hover:bg-blue-950 hover:text-white transition"
+                className={`block w-full py-2 px-2 rounded transition ${
+                  pathname === href
+                    ? "bg-blue-950 text-white"
+                    : "hover:bg-blue-950 hover:text-white"
+                }`}
               >
-                {item}
-              </a>
+                {label}
+              </Link>
             </li>
           ))}
         </ul>

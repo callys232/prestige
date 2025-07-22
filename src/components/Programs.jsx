@@ -60,14 +60,14 @@ const ProgramDropdown = ({ label, links }) => {
 const Programs = () => {
   return (
     <section
-      className="relative bg-cover bg-center bg-no-repeat text-black dark:text-white py-20 px-6"
+      className="relative bg-cover bg-center bg-no-repeat text-black dark:text-white py-10 px-6"
       style={{ backgroundImage: "url('/bodybg.png')" }}
     >
       {/* Gradient + Blur Overlay */}
       <div className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-0" />
 
       {/* Intro Text */}
-      <div className="relative z-10 max-w-4xl mx-auto text-left space-y-4 mb-16">
+      <div className="relative z-10 max-w-4xl mx-auto text-left space-y-2 mb-2">
         <p className="text-lg md:text-xl font-medium text-white dark:text-gray-200">
           From kids&apos; fitness to adult training, dance to dumbbells, we
           combine expert coaching with modern equipment to ensure every member
@@ -76,7 +76,7 @@ const Programs = () => {
         <div className="text-left">
           <Link
             href="/about"
-            className="inline-block mt-4 px-6 py-3 border border-[#1F5C8E] rounded hover:bg-white hover:text-[#1F5C8E] dark:hover:bg-white dark:hover:text-[#1F5C8E] transition"
+            className="inline-block mt-0 px-4 py-1 border border-[#1F5C8E] rounded hover:bg-white hover:text-[#1F5C8E] dark:hover:bg-white dark:hover:text-[#1F5C8E] transition"
           >
             Read More
           </Link>
@@ -86,11 +86,11 @@ const Programs = () => {
       <div className="h-10 w-10 bg-prestigeTeal" />
 
       {/* Adults Program Section */}
-      <div className="relative z-10 w-full bg-white dark:bg-white/10 backdrop-blur-lg border border-white/30 shadow-lg py-10">
+      <div className="relative z-10 w-full bg-white dark:bg-white/10 backdrop-blur-lg border border-white/30 shadow-lg py-4">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-10">
           {/* Text Content */}
-          <div className="flex-1 space-y-4">
-            <h2 className="inline-block px-8 py-3 bg-[#1F5C8E] text-white text-3xl font-bold uppercase tracking-wide rounded-xl shadow-md hover:shadow-xl hover:brightness-110 transition duration-300">
+          <div className="flex-1 space-y-2">
+            <h2 className="inline-block px-8 py-2 bg-[#1F5C8E] text-white text-3xl font-bold uppercase tracking-wide rounded-xl shadow-md hover:shadow-xl hover:brightness-110 transition duration-300">
               ADULTS PROGRAM
             </h2>
 
