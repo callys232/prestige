@@ -8,7 +8,8 @@ const NavBar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { label: "About Us", href: "/about" },
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/aboutUs" },
     { label: "Gallery", href: "/gallery" },
     { label: "Classes", href: "/classes" },
     { label: "Contact", href: "/contact" },
@@ -30,7 +31,7 @@ const NavBar = () => {
           <Link
             href="/Profile"
             onClick={handleClick}
-            className={`inline-block border font-semibold px-6 py-2 rounded-md transition duration-200 ${
+            className={`inline-block border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
               isClicked
                 ? "bg-[#0B56A3] text-blue-100 border-[#0B56A3] scale-95"
                 : "border-[#0652A6] text-[#0652A6] hover:bg-[#0B56A3] hover:text-blue-200"
@@ -47,7 +48,7 @@ const NavBar = () => {
           aria-label="Toggle navigation menu"
         >
           <svg
-            className="w-7 h-7"
+            className="w-6 h-6"
             fill="none"
             stroke="currentColor"
             strokeWidth={2}
@@ -70,7 +71,7 @@ const NavBar = () => {
         </button>
 
         {/* Desktop Navigation */}
-        <ul className="hidden md:flex flex-wrap gap-x-6 gap-y-2 text-[#0B56A3] font-bold text-xl uppercase">
+        <ul className="hidden md:flex flex-wrap gap-x-4 gap-y-2 text-[#0B56A3] font-medium text-sm uppercase">
           {navItems.map(({ label, href }) => (
             <li key={label}>
               <Link
@@ -90,7 +91,7 @@ const NavBar = () => {
 
       {/* Mobile Nav Links */}
       {menuOpen && (
-        <ul className="md:hidden flex flex-col items-start px-6 pb-4 gap-3 text-[#0B56A3] font-bold text-lg uppercase animate-slideDown">
+        <ul className="md:hidden flex flex-col items-start px-6 pb-4 gap-2 text-[#0B56A3] font-medium text-sm uppercase animate-slideDown">
           {navItems.map(({ label, href }) => (
             <li key={label} className="w-full">
               <Link

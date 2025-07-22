@@ -1,15 +1,15 @@
 import Navbar from "@/components/Navbar";
-
+import Classes from "@/components/classes/Classes";
 import Footer from "@/components/Footer";
 
-const Classes = () => {
+const ClassesPage = () => {
   return (
     <div className="bg-white dark:bg-gray-900">
       <Navbar />
-      
+      <Classes />
       <Footer />
     </div>
   );
 };
 
-export default Classes;
+export default ClassesPage;
