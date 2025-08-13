@@ -29,7 +29,7 @@ const NavBar = () => {
         {/* Login/Signup */}
         <div>
           <Link
-            href="/Profile"
+            href="/login"
             onClick={handleClick}
             className={`inline-block border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
               isClicked
@@ -37,7 +37,7 @@ const NavBar = () => {
                 : "border-[#0652A6] text-[#0652A6] hover:bg-[#0B56A3] hover:text-blue-200"
             }`}
           >
-            Login / Signup
+            Login
           </Link>
         </div>
 

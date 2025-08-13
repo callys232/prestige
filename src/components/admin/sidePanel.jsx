@@ -1,30 +1,25 @@
-const Sidebar = ({ active, onSelect }) => {
-  const menuItems = [
-    "User Management",
-    "Trainer Management",
-    "Bookings & Attendance",
-    "Analytics & Reports",
-    "Notification & Messaging",
-  ];
+const sections = ["User Management", "Workout Plans", "Work Activities"];
 
+export default function Sidebar({ active, onSelect }) {
   return (
-    <div className="w-64 bg-gray-900 text-white h-screen p-5">
-      <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
-      <ul>
-        {menuItems.map((item) => (
-          <li
-            key={item}
-            className={`mb-4 cursor-pointer ${
-              active === item ? "text-orange-500 font-semibold" : "hover:text-orange-400"
-            }`}
-            onClick={() => onSelect(item)}
-          >
-            {item}
+    <div className="w-64 bg-white dark:bg-gray-800 p-4 shadow-lg">
+      <h2 className="text-xl font-bold mb-4">Admin Panel</h2>
+      <ul className="space-y-2">
+        {sections.map((section) => (
+          <li key={section}>
+            <button
+              onClick={() => onSelect(section)}
+              className={`w-full text-left px-4 py-2 rounded-md ${
+                active === section
+                  ? "bg-prestigeTeal text-white"
+                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`}
+            >
+              {section}
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
-};
-
-export default Sidebar;
+}
