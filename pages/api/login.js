@@ -1,9 +1,12 @@
 import { serialize } from "cookie";
+import jwt from "jsonwebtoken";
 
 const users = [
   { username: "lamidUser", password: "secure123", role: "user" },
   { username: "admin", password: "adminpass", role: "admin" },
 ];
+
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use env var in production
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -35,14 +38,17 @@ export default async function handler(req, res) {
     return res.status(403).json({ message: "User access not allowed here" });
   }
 
-  const sessionData = {
-    username: user.username,
-    role: user.role,
-    timestamp: Date.now(),
-  };
+  // Create JWT
+  const token = jwt.sign(
+    {
+      username: user.username,
+      role: user.role,
+    },
+    JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
-  const token = Buffer.from(JSON.stringify(sessionData)).toString("base64");
-
+  // Set cookie
   res.setHeader(
     "Set-Cookie",
     serialize("session", token, {
@@ -57,6 +63,6 @@ export default async function handler(req, res) {
   return res.status(200).json({
     message: "Login successful",
     role: user.role,
-    redirect: user.role === "admin" ? "/admin/Adminlogin" : "/dashboard",
+    redirect: user.role === "admin" ? "/admin/dashboard" : "/dashboard",
   });
 }

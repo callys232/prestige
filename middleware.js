@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 export function middleware(req) {
-  const session = req.cookies.get("session")?.value;
+  const token = req.cookies.get("session")?.value;
 
-  if (!session) {
+  if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const decoded = JSON.parse(Buffer.from(session, "base64").toString());
+  let decoded;
+  try {
+    decoded = jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
 
   if (req.nextUrl.pathname.startsWith("/admin") && decoded.role !== "admin") {
     return NextResponse.redirect(new URL("/dashboard", req.url));

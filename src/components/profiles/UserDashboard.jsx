@@ -1,21 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function Dashboard() {
-  // Simulated user data (replace with real auth context or props)
   const [username, setUsername] = useState("lamidUser");
   const [password, setPassword] = useState("");
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState(null);
+  const [progress, setProgress] = useState({
+    strength: 0,
+    flexibility: 0,
+    endurance: 0,
+  });
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        const res = await fetch("/api/progress");
+        const data = await res.json();
+        setProgress(data);
+      } catch (err) {
+        console.error("Failed to fetch progress:", err);
+      }
+    };
+
+    fetchProgress();
+  }, []);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     setStatus(null);
 
     try {
-      // Replace with real API call
       await new Promise((res) => setTimeout(res, 1000));
       setEditing(false);
       setStatus({
@@ -29,12 +46,11 @@ export default function Dashboard() {
 
   return (
     <div className="bg-white dark:bg-gray-900 text-black dark:text-white py-10 px-6 rounded-xl shadow-lg max-w-4xl mx-auto">
-      {/* Avatar */}
+      {/* Avatar & Heading */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-lg font-bold text-white">
           👤
         </div>
-        {/* Glitch Heading */}
         <div className="relative inline-block text-left overflow-hidden">
           <span className="absolute left-1 top-0 text-red-500 opacity-40 animate-glitch select-none pointer-events-none">
             WELCOME BACK, {username.toUpperCase()}
@@ -114,52 +130,29 @@ export default function Dashboard() {
 
       {/* Progress Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Card 1 */}
-        <div className="bg-prestigeTeal text-white p-4 rounded-xl shadow-md">
-          <p className="text-sm font-medium mb-2">Strength Progress</p>
-          <p className="text-sm text-white/90">Classes Attended</p>
-          <div className="my-2 w-full bg-white/30 rounded-full h-3">
-            <div className="bg-white h-3 rounded-full w-[43%]"></div>
-          </div>
-          <p className="text-right text-sm font-semibold">43%</p>
-        </div>
-
-        {/* Card 2 */}
-        <div className="bg-prestigeTeal text-white p-4 rounded-xl shadow-md relative">
-          <p className="text-sm font-medium mb-2">Flexibility Boost</p>
-          <p className="text-sm text-white/90">Classes Attended</p>
-          <div className="my-2 w-full bg-white/30 rounded-full h-3">
-            <div className="bg-white h-3 rounded-full w-[43%]"></div>
-          </div>
-          <p className="text-right text-sm font-semibold mb-4">43%</p>
-          <Link
-            href="/book"
-            className="block text-center bg-blue-400 text-prestigeTeal font-semibold rounded-md px-4 py-2 hover:bg-gray-100 transition"
-          >
-            BOOK CLASS
-          </Link>
-        </div>
-
-        {/* Card 3 */}
-        <div className="bg-prestigeTeal text-white p-4 rounded-xl shadow-md">
-          <p className="text-sm font-medium mb-2">Endurance Focus</p>
-          <p className="text-sm text-white/90">Classes Attended</p>
-          <div className="my-2 w-full bg-white/30 rounded-full h-3">
-            <div className="bg-white h-3 rounded-full w-[43%]"></div>
-          </div>
-          <p className="text-right text-sm font-semibold">43%</p>
-        </div>
+        <AnimatedCard>
+          <ProgressCard title="Strength Progress" value={progress.strength} />
+        </AnimatedCard>
+        <AnimatedCard>
+          <ProgressCard
+            title="Flexibility Boost"
+            value={progress.flexibility}
+            link="/classes"
+          />
+        </AnimatedCard>
+        <AnimatedCard>
+          <ProgressCard title="Endurance Focus" value={progress.endurance} />
+        </AnimatedCard>
       </div>
 
-      {/* Help Link */}
-      <div className="mt-6">
+      {/* Help & Logout */}
+      <div className="mt-6 flex justify-between items-center">
         <Link
-          href="/help"
+          href="/contact"
           className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
         >
           Need Help?
         </Link>
-
         <button
           onClick={async () => {
             await fetch("/api/logout");
@@ -173,3 +166,43 @@ export default function Dashboard() {
     </div>
   );
 }
+
+// Reusable Progress Card Component
+function ProgressCard({ title, value, link }) {
+  const [animatedWidth, setAnimatedWidth] = useState(0);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAnimatedWidth(value);
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [value]);
+
+  return (
+    <div className="bg-prestigeTeal text-white p-4 rounded-xl shadow-md relative hover:scale-[1.02] transition-transform duration-300">
+      <p className="text-sm font-medium mb-2">{title}</p>
+      <p className="text-sm text-white/90">Classes Attended</p>
+      <div className="my-2 w-full bg-white/30 rounded-full h-3 overflow-hidden">
+        <div
+          className="bg-white h-3 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${animatedWidth}%` }}
+        ></div>
+      </div>
+      <p className="text-right text-sm font-semibold mb-4">{value}%</p>
+      {link && (
+        <Link
+          href={link}
+          className="block text-center bg-blue-400 text-prestigeTeal font-semibold rounded-md px-4 py-2 hover:bg-gray-100 transition"
+        >
+          BOOK CLASS
+        </Link>
+      )}
+    </div>
+  );
+}
+
+// Animated Wrapper Component
+function AnimatedCard({ children }) {
+  return <div className="opacity-0 animate-fade-in-up">{children}</div>;
+}
+[];
