@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signAccessToken, signRefreshToken } from "@/lib/jwt";
+import { signAccessToken, signRefreshToken } from "../../../../lib/jwt";
 import bcrypt from "bcryptjs";
-import { User } from "@/lib/models/User";
-import dbConnect from "@/lib/db";
-import { sendVerificationEmail } from "@/lib/mailer";
-import { generateVerificationCode } from "@/lib/utils";
-import { Profile } from "@/lib/models/Profile";
+import { User } from "../../../../lib/models/User";
+import dbConnect from "../../../../lib/db";
+import { sendVerificationEmail } from "../../../../lib/mailer";
+import { generateVerificationCode } from "../../../../lib/utils";
+import { Profile } from "../../../../lib/models/Profile";
 
 async function verifyPassword(input: string, hashed: string) {
   return bcrypt.compare(input, hashed);

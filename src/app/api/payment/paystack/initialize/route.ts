@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, badRequest, serverError } from "@/lib/response";
-import { requireAuth } from "@/lib/middleware/requireAuth";
+import connectDB from "../../../../lib/db";
+import { ok, badRequest, serverError } from "../../../../lib/response";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
 
-import { initializePayment2 } from "@/lib/paystack";
+import { initializePayment2 } from "../../../../lib/paystack";
 
 export async function POST(request: NextRequest) {
     try {

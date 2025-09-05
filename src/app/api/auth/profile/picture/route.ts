@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
-import { uploadSingleFile } from "@/lib/upload";
-import { ok } from "@/lib/response";
-import { Profile } from "@/lib/models/Profile";
-import dbConnect from "@/lib/db";
-import { requireAuth } from "@/lib/middleware/requireAuth";
-// import { User } from "@/lib/models/User";
+import { uploadSingleFile } from "../../../../lib/upload";
+import { ok } from "../../../../lib/response";
+import { Profile } from "../../../../lib/models/Profile";
+import dbConnect from "../../../../lib/db";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
+// import { User } from "../../../../lib/models/User";
 
 export async function POST(request: NextRequest) {
     try {

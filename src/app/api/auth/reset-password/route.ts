@@ -1,9 +1,9 @@
 // app/api/auth/reset-password/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/db";
-import { User } from "@/lib/models/User";
-import { verifyResetToken } from "@/lib/jwt";
+import dbConnect from "../../../../lib/db";
+import { User } from "../../../../lib/models/User";
+import { verifyResetToken } from "../../../../lib/jwt";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {

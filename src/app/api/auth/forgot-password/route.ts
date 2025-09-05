@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signResetToken } from "@/lib/jwt";
-import { User } from "@/lib/models/User";
-import dbConnect from "@/lib/db";
-import { sendResetEmail } from "@/lib/mailer";
+import { signResetToken } from "../../../../lib/jwt";
+import { User } from "../../../../lib/models/User";
+import dbConnect from "../../../../lib/db";
+import { sendResetEmail } from "../../../../lib/mailer";
 
 export async function POST(req: NextRequest) {
     await dbConnect();

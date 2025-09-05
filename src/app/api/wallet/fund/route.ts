@@ -1,13 +1,13 @@
 
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { serverError } from "@/lib/response";
-import { requireAuth } from "@/lib/middleware/requireAuth";
-// import { addFunds } from "@/lib/wallet";
-import { initializePayment2 } from "@/lib/paystack";
-import { ok } from "@/lib/response";
-import { getUserFromUserid } from "@/lib/utils";
-import { Iuser } from "@/lib/types/auth";
+import connectDB from "../../../../lib/db";
+import { serverError } from "../../../../lib/response";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
+// import { addFunds } from "../../../../lib/wallet";
+import { initializePayment2 } from "../../../../lib/paystack";
+import { ok } from "../../../../lib/response";
+import { getUserFromUserid } from "../../../../lib/utils";
+import { Iuser } from "../../../../lib/types/auth";
 
 // POST /api/wa
 // add funds to wallet

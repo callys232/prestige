@@ -1,4 +1,4 @@
-import UserLogin from "@/components/profiles/Login";
+import UserLogin from "../../../../components/profiles/Login";
 
 const ProfilePage = () => {
   return (

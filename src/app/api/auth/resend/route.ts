@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import dbConnect from "@/lib/db";
-import { User } from "@/lib/models/User";
-import { generateOtp } from "@/lib/otp";
-import { resendOtpEmail } from "@/lib/mailer";
+import dbConnect from "../../../../lib/db";
+import { User } from "../../../../lib/models/User";
+import { generateOtp } from "../../../../lib/otp";
+import { resendOtpEmail } from "../../../../lib/mailer";
 
 export async function POST(req: Request) {
   const { email } = await req.json();

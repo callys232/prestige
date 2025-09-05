@@ -1,4 +1,4 @@
-import Dashboard from "@/components/profiles/UserDashboard";
+import Dashboard from "../../../../components/profiles/UserDashboard";
 
 const DashboardPage = () => {
   return (

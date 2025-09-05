@@ -1,8 +1,8 @@
-import { Profile } from "@/lib/models/Profile";
-import dbConnect from "@/lib/db";
+import { Profile } from "../../../../lib/models/Profile";
+import dbConnect from "../../../../lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/lib/middleware/requireAuth";
-import { User } from "@/lib/models/User";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
+import { User } from "../../../../lib/models/User";
 
 // GET user profile
 export async function GET(req: NextRequest) {

@@ -3,9 +3,9 @@ import {
   verifyRefreshToken,
   signAccessToken,
   signRefreshToken,
-} from "@/lib/jwt";
-import dbConnect from "@/lib/db";
-import { User } from "@/lib/models/User";
+} from "../../../../lib/jwt";
+import dbConnect from "../../../../lib/db";
+import { User } from "../../../../lib/models/User";
 
 export async function POST(req: NextRequest) {
   const refreshToken = req.cookies.get("refresh-token")?.value;
@@ -50,13 +50,11 @@ export async function POST(req: NextRequest) {
     user.refreshTokenJTI = newJTI;
     await user.save();
 
-    const accessCookie = `access-token=${newAccessToken}; HttpOnly; Path=/; Max-Age=${
-      60 * 60 * 24 * 7
-    }; ${isProd ? "Secure; SameSite=Lax;" : ""}`;
+    const accessCookie = `access-token=${newAccessToken}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7
+      }; ${isProd ? "Secure; SameSite=Lax;" : ""}`;
 
-    const refreshCookie = `refresh-token=${newRefreshToken}; HttpOnly; Path=/; Max-Age=${
-      60 * 60 * 24 * 7
-    }; ${isProd ? "Secure; SameSite=Lax;" : ""}`;
+    const refreshCookie = `refresh-token=${newRefreshToken}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7
+      }; ${isProd ? "Secure; SameSite=Lax;" : ""}`;
 
     const response = new NextResponse(JSON.stringify({ success: true }), {
       status: 200,

@@ -1,9 +1,9 @@
 import moment from "moment";
 import { NextRequest } from "next/server";
-import { Notification } from "../lib/models/Notification";
-import { ok, badRequest, serverError } from "@/lib/response";
-import connectDB from "@/lib/db";
-import { requireAuth } from "@/lib/middleware/requireAuth";
+import { Notification } from "./models/Notification";
+import { ok, badRequest, serverError } from "../../../../lib/response";
+import connectDB from "../../../../lib/db";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
 
 // Types
 // interface NotificationData {

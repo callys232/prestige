@@ -1,6 +1,6 @@
-import { Payment } from "@/lib/models/Payment";
-import connectDB from "@/lib/db";
-import { ok } from "@/lib/response";
+import { Payment } from "../../../../lib/models/Payment";
+import connectDB from "../../../../lib/db";
+import { ok } from "../../../../lib/response";
 
 export async function GET() {
     await connectDB();

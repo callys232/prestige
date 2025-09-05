@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { Cart } from "@/lib/models/Cart";
-import { ok, notFound, badRequest } from "@/lib/response";
+import connectDB from "../../../../lib/db";
+import { Cart } from "../../../../lib/models/Cart";
+import { ok, notFound, badRequest } from "../../../../lib/response";
 
 // DELETE /api/cart/[id]/clear
 // Remove all products from the cart (clear cart)

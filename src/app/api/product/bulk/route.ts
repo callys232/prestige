@@ -1,7 +1,7 @@
 import { NextRequest, } from "next/server";
-import { Product } from "@/lib/models/Product";
-import connectDB from "@/lib/db";
-import { ok, created, } from "@/lib/response";
+import { Product } from "../../../../lib/models/Product";
+import connectDB from "../../../../lib/db";
+import { ok, created, } from "../../../../lib/response";
 
 // Create bulk products
 export async function POST(req: NextRequest) {

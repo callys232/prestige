@@ -1,10 +1,10 @@
-import { Order } from "@/lib/models/Order";
-import { Product } from "@/lib/models/Product";
-import { Cart } from "@/lib/models/Cart";
+import { Order } from "../../../../lib/models/Order";
+import { Product } from "../../../../lib/models/Product";
+import { Cart } from "../../../../lib/models/Cart";
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, badRequest, } from "@/lib/response";
-import { requireAuth } from "@/lib/middleware/requireAuth";
+import connectDB from "../../../../lib/db";
+import { ok, badRequest, } from "../../../../lib/response";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
 
 // GET /api/order
 // Get all orders    

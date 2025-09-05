@@ -5,7 +5,7 @@ import Programs from "../components/Programs";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar";
 import Cta from "../components/Cta";
-// import ProgramButtons from '@/components/ProgramButtons';
+// import ProgramButtons from '../../../../components/ProgramButtons';
 
 export default function HomePage() {
   return (

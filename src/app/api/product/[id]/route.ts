@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { Product } from "@/lib/models/Product";
-import connectDB from "@/lib/db";
-import { ok, badRequest, notFound } from "@/lib/response";
-import { Wishlist } from "@/lib/models/Wishlist";
-import { requireAuth } from "@/lib/middleware/requireAuth";
+import { Product } from "../../../../lib/models/Product";
+import connectDB from "../../../../lib/db";
+import { ok, badRequest, notFound } from "../../../../lib/response";
+import { Wishlist } from "../../../../lib/models/Wishlist";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
 // File: app/api/product/[id]/route.ts
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {

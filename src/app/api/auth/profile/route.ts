@@ -1,8 +1,8 @@
-import { User } from "@/lib/models/User";
-import { Profile } from "@/lib/models/Profile";
-import dbConnect from "@/lib/db";
+import { User } from "../../../../lib/models/User";
+import { Profile } from "../../../../lib/models/Profile";
+import dbConnect from "../../../../lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/lib/middleware/requireAuth";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
 
 export async function PATCH(req: NextRequest) {
     try {

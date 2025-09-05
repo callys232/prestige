@@ -1,6 +1,6 @@
-import { ClassModel } from "@/lib/models/Class";
-import connectDB from "@/lib/db";
-import { ok } from "@/lib/response";
+import { ClassModel } from "../../../../lib/models/Class";
+import connectDB from "../../../../lib/db";
+import { ok } from "../../../../lib/response";
 
 export async function GET() {
     await connectDB();

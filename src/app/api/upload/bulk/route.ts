@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { uploaded } from "@/lib/response";
-import { uploadMultipleFiles } from "@/lib/upload";
+import { uploaded } from "../../../../lib/response";
+import { uploadMultipleFiles } from "../../../../lib/upload";
 // import fs from 'fs';
 
 // Version 1: For FormData file uploads

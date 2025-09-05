@@ -1,6 +1,6 @@
-import Navbar from "@/components/Navbar";
-import Classes from "@/components/classes/Classes";
-import Footer from "@/components/Footer";
+import Navbar from "../../../../components/Navbar";
+import Classes from "../../../../components/classes/Classes";
+import Footer from "../../../../components/Footer";
 
 const ClassesPage = () => {
   return (

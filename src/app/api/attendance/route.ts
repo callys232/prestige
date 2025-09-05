@@ -1,6 +1,6 @@
-import { Attendance } from "@/lib/models/Attendance";
-import connectDB from "@/lib/db";
-import { created } from "@/lib/response";
+import { Attendance } from "../../../../lib/models/Attendance";
+import connectDB from "../../../../lib/db";
+import { created } from "../../../../lib/response";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

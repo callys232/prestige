@@ -1,5 +1,5 @@
-import { Wallet, IWallet } from '../lib/models/Wallet';
-import { ok, created, badRequest, serverError } from "@/lib/response";
+import { Wallet, IWallet } from './models/Wallet';
+import { ok, created, badRequest, serverError } from "../../../../lib/response";
 import {
   AuthenticatedRequest,
   AddFundsRequest,
@@ -8,7 +8,7 @@ import {
   transactionRequest,
   ErrorResponse
 }
-  from '../lib/types/wallet';
+  from './types/wallet';
 import { sendReceiptMail } from './sendReceipts';
 import { getUserFromUserid } from './utils';
 

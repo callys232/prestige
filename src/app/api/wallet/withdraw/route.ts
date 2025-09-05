@@ -1,10 +1,10 @@
 
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { serverError, ok } from "@/lib/response";
-import { requireAuth } from "@/lib/middleware/requireAuth";
-import { deductFunds } from "@/lib/wallet";
-import { initiatePaystackTransfer } from "@/lib/paystack";
+import connectDB from "../../../../lib/db";
+import { serverError, ok } from "../../../../lib/response";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
+import { deductFunds } from "../../../../lib/wallet";
+import { initiatePaystackTransfer } from "../../../../lib/paystack";
 
 // POST /api/wallet/withdraw
 // withdraw funds from wallet

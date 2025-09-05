@@ -2,10 +2,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { sendVerificationEmail } from "@/lib/mailer";
-import { generateUsername, generateVerificationCode, splitFullName } from "@/lib/utils";
-import connectDB from "@/lib/db";
-import { User } from "@/lib/models/User";
+import { sendVerificationEmail } from "../../../../lib/mailer";
+import { generateUsername, generateVerificationCode, splitFullName } from "../../../../lib/utils";
+import connectDB from "../../../../lib/db";
+import { User } from "../../../../lib/models/User";
 
 const schema = z.object({
   fullName: z.string().min(1),

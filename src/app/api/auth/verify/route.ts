@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { serialize } from "cookie";
-import { verifyOtpAndGenerateToken } from "@/lib/otp";
-import type { VerifiedAdmin } from "@/lib/types/auth";
-import { sendWelcomeEmail } from "@/lib/mailer";
-import connectDB from "@/lib/db";
-import { Profile } from "@/lib/models/Profile";
-import { Wallet } from "@/lib/models/Wallet";
+import { verifyOtpAndGenerateToken } from "../../../../lib/otp";
+import type { VerifiedAdmin } from "../../../../lib/types/auth";
+import { sendWelcomeEmail } from "../../../../lib/mailer";
+import connectDB from "../../../../lib/db";
+import { Profile } from "../../../../lib/models/Profile";
+import { Wallet } from "../../../../lib/models/Wallet";
 
 export async function POST(req: Request) {
   const { otp, email } = await req.json();

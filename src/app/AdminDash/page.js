@@ -1,4 +1,4 @@
-import AdminDashboard from "@/components/admin/AdminDash";
+import AdminDashboard from "../../../../components/admin/AdminDash";
 const AdminDashPage = () => {
   return (
     <div className="bg-white dark:bg-gray-900">

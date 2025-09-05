@@ -1,6 +1,6 @@
-import { Trainer } from "@/lib/models/Trainer";
-import connectDB from "@/lib/db";
-import { ok, notFound } from "@/lib/response";
+import { Trainer } from "../../../../lib/models/Trainer";
+import connectDB from "../../../../lib/db";
+import { ok, notFound } from "../../../../lib/response";
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
     await connectDB();

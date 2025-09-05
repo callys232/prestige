@@ -1,11 +1,11 @@
 import { NextRequest, } from "next/server";
-import { Product } from "@/lib/models/Product";
-import { ProductCategory } from "@/lib/models/ProductCategory";
-import { Fabric } from "@/lib/models/Fabric";
-import connectDB from "@/lib/db";
-import { ok, created, } from "@/lib/response";
-import { Wishlist } from "@/lib/models/Wishlist";
-import { requireAuth } from "@/lib/middleware/requireAuth";
+import { Product } from "../../../../lib/models/Product";
+import { ProductCategory } from "../../../../lib/models/ProductCategory";
+import { Fabric } from "../../../../lib/models/Fabric";
+import connectDB from "../../../../lib/db";
+import { ok, created, } from "../../../../lib/response";
+import { Wishlist } from "../../../../lib/models/Wishlist";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
 
 
 // Create product

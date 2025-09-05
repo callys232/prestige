@@ -1,4 +1,4 @@
-// import AdminLog from "@/components/profiles/Adminlogin";
+// import AdminLog from "../../../../components/profiles/Adminlogin";
 
 // const AdminLoginPage = () => {
 //   return (

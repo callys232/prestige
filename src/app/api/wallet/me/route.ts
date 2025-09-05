@@ -1,10 +1,10 @@
 // GET /api/wa
 // Get my wallet details
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, serverError } from "@/lib/response";
-import { requireAuth } from "@/lib/middleware/requireAuth";
-import { getWalletForUser } from "@/lib/wallet";
+import connectDB from "../../../../lib/db";
+import { ok, serverError } from "../../../../lib/response";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
+import { getWalletForUser } from "../../../../lib/wallet";
 
 export async function GET(request: NextRequest) {
     try {

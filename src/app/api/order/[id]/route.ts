@@ -1,8 +1,8 @@
-import { Order } from "@/lib/models/Order";
-import { Product } from "@/lib/models/Product";
+import { Order } from "../../../../lib/models/Order";
+import { Product } from "../../../../lib/models/Product";
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, notFound, badRequest } from "@/lib/response";
+import connectDB from "../../../../lib/db";
+import { ok, notFound, badRequest } from "../../../../lib/response";
 
 // GET /api/order/[id]
 // Get order by id

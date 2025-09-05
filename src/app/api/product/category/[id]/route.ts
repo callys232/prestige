@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { Product } from "@/lib/models/Product";
-import { ProductCategory } from "@/lib/models/ProductCategory";
-import { Fabric } from "@/lib/models/Fabric";
-import connectDB from "@/lib/db";
-import { ok, notFound } from "@/lib/response";
+import { Product } from "../../../../lib/models/Product";
+import { ProductCategory } from "../../../../lib/models/ProductCategory";
+import { Fabric } from "../../../../lib/models/Fabric";
+import connectDB from "../../../../lib/db";
+import { ok, notFound } from "../../../../lib/response";
 
 // GET /api/product/category/[id]
 // get all product for a specific category

@@ -1,7 +1,7 @@
-import { Wallet } from "@/lib/models/Wallet";
+import { Wallet } from "../../../../lib/models/Wallet";
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, notFound, badRequest } from "@/lib/response";
+import connectDB from "../../../../lib/db";
+import { ok, notFound, badRequest } from "../../../../lib/response";
 
 // GET wallet by ID
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {

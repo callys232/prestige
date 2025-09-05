@@ -1,6 +1,6 @@
-import { Booking } from "@/lib/models/Booking";
-import connectDB from "@/lib/db";
-import { created } from "@/lib/response";
+import { Booking } from "../../../../lib/models/Booking";
+import connectDB from "../../../../lib/db";
+import { created } from "../../../../lib/response";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {

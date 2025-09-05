@@ -1,7 +1,7 @@
-import { ProductCategory } from "@/lib/models/ProductCategory";
+import { ProductCategory } from "../../../../lib/models/ProductCategory";
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, notFound, badRequest } from "@/lib/response";
+import connectDB from "../../../../lib/db";
+import { ok, notFound, badRequest } from "../../../../lib/response";
 
 // GET /api/product-category/[id]
 // Get a product category by id

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { Product } from "@/lib/models/Product";
-import connectDB from "@/lib/db";
-import { ok, notFound } from "@/lib/response";
+import { Product } from "../../../../lib/models/Product";
+import connectDB from "../../../../lib/db";
+import { ok, notFound } from "../../../../lib/response";
 
 // GET /api/product/seller/[id]
 // Get all products for a specific seller

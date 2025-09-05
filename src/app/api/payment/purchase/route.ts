@@ -1,14 +1,14 @@
 import { NextRequest } from "next/server";
-import connectDB from "@/lib/db";
-import { ok, badRequest, serverError } from "@/lib/response";
-import { requireAuth } from "@/lib/middleware/requireAuth";
-import { Order, } from "@/lib/models/Order";
-import { Wallet } from "@/lib/models/Wallet";
-import { Product } from "@/lib/models/Product";
-import { Cart } from "@/lib/models/Cart";
-import { initializePayment2 } from "@/lib/paystack";
-import { deductFunds } from "@/lib/wallet";
-import { getUserFromUserid } from "@/lib/utils";
+import connectDB from "../../../../lib/db";
+import { ok, badRequest, serverError } from "../../../../lib/response";
+import { requireAuth } from "../../../../lib/middleware/requireAuth";
+import { Order, } from "../../../../lib/models/Order";
+import { Wallet } from "../../../../lib/models/Wallet";
+import { Product } from "../../../../lib/models/Product";
+import { Cart } from "../../../../lib/models/Cart";
+import { initializePayment2 } from "../../../../lib/paystack";
+import { deductFunds } from "../../../../lib/wallet";
+import { getUserFromUserid } from "../../../../lib/utils";
 
 export async function POST(request: NextRequest) {
     try {
