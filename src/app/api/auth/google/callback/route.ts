@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signAccessToken, signRefreshToken } from "../../../../lib/jwt";
-import { User } from "../../../../lib/models/User";
-import dbConnect from "../../../../lib/db";
+import { signAccessToken, signRefreshToken } from "../../../../../lib/jwt";
+import { User } from "../../../../../lib/models/User";
+import dbConnect from "../../../../../lib/db";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;

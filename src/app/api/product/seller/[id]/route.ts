@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { Product } from "../../../../lib/models/Product";
-import connectDB from "../../../../lib/db";
-import { ok, notFound } from "../../../../lib/response";
+import { Product } from "../../../../../lib/models/Product";
+import connectDB from "../../../../../lib/db";
+import { ok, notFound } from "../../../../../lib/response";
 
 // GET /api/product/seller/[id]
 // Get all products for a specific seller
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     await connectDB();
     const body = await request.json();
-    const result = await Product.updateMany({ seller: params.id }, body, { new: true });
+    const result = await Product.updateMany({ seller: params.id }, body);
     if (result.matchedCount === 0) {
         return notFound("No products found for this seller");
     }

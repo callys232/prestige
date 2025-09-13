@@ -1,7 +1,7 @@
 
-import connectDB from "../../../../lib/db";
-import { ok, badRequest, } from "../../../../lib/response";
-import { getPaystackBanks } from "../../../../lib/paystack";
+import connectDB from "../../../../../lib/db";
+import { ok, badRequest, } from "../../../../../lib/response";
+import { getPaystackBanks } from "../../../../../lib/paystack";
 
 //  GET: Get all wallets
 export async function GET() {

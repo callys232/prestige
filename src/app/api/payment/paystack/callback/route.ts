@@ -1,11 +1,11 @@
 import axios from "axios";
-import connectDB from "../../../../lib/db";
-import { ok, badRequest, serverError, notFound } from "../../../../lib/response";
-import { Order } from "../../../../lib/models/Order";
-import { Wallet } from "../../../../lib/models/Wallet";
-import { addFunds, deductFunds } from "../../../../lib/wallet";
-import { getUserFromUuid } from "../../../../lib/utils";
-import { Iuser } from "../../../../lib/types/auth";
+import connectDB from "../../../../../lib/db";
+import { ok, badRequest, serverError, notFound } from "../../../../../lib/response";
+import { Order } from "../../../../../lib/models/Order";
+import { Wallet } from "../../../../../lib/models/Wallet";
+import { addFunds, deductFunds } from "../../../../../lib/wallet";
+import { getUserFromUuid } from "../../../../../lib/utils";
+import { Iuser } from "../../../../../lib/types/auth";
 
 
 export async function GET(req: Request) {

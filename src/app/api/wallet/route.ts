@@ -1,8 +1,8 @@
-import { Wallet } from "../../../../lib/models/Wallet";
+import { Wallet } from "../../../lib/models/Wallet";
 import { NextRequest } from "next/server";
-import connectDB from "../../../../lib/db";
-import { ok, created, badRequest, serverError } from "../../../../lib/response";
-import { requireAuth } from "../../../../lib/middleware/requireAuth";
+import connectDB from "../../../lib/db";
+import { ok, created, badRequest, serverError } from "../../../lib/response";
+import { requireAuth } from "../../../lib/middleware/requireAuth";
 
 //  GET: Get all wallets
 export async function GET() {

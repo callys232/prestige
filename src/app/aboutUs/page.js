@@ -1,7 +1,7 @@
-import Navbar from "../../../../components/Navbar";
-import AboutUs from "../../../../components/aboutUs/AboutUs";
- import Trainers from "../../../../components/aboutUs/Trainers";
-import Footer from "../../../../components/Footer";
+import Navbar from "../../components/Navbar";
+import AboutUs from "../../components/aboutUs/AboutUs";
+ import Trainers from "../../components/aboutUs/Trainers";
+import Footer from "../../components/Footer";
 
 const AboutUsPage = () => {
   return (

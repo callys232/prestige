@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import connectDB from "../../../../lib/db";
-import { ok, badRequest, serverError } from "../../../../lib/response";
-import { finalizePaystackTransfer, } from "../../../../lib/paystack";
+import connectDB from "../../../../../lib/db";
+import { ok, badRequest, serverError } from "../../../../../lib/response";
+import { finalizePaystackTransfer, } from "../../../../../lib/paystack";
 
 export async function POST(request: NextRequest) {
     try {

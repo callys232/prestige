@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { uploadSingleFile } from "../../../../lib/upload";
-import { uploaded } from "../../../../lib/response";
+import { uploadSingleFile } from "../../../lib/upload";
+import { uploaded } from "../../../lib/response";
 
 export async function POST(request: NextRequest) {
     try {

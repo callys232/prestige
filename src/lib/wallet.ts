@@ -1,5 +1,5 @@
 import { Wallet, IWallet } from './models/Wallet';
-import { ok, created, badRequest, serverError } from "../../../../lib/response";
+import { ok, created, badRequest, serverError } from "./response";
 import {
   AuthenticatedRequest,
   AddFundsRequest,

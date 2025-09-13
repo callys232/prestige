@@ -1,11 +1,11 @@
 // POST /api/wallet/receipt
 // Send receipt for a specific transaction
 import { NextRequest } from "next/server";
-import connectDB from "../../../../lib/db";
-import { ok, serverError, badRequest } from "../../../../lib/response";
-import { requireAuth } from "../../../../lib/middleware/requireAuth";
-import { getTransactionByReference } from "../../../../lib/wallet";
-import { sendReceiptMail } from "../../../../lib/sendReceipts";
+import connectDB from "../../../../../lib/db";
+import { ok, serverError, badRequest } from "../../../../../lib/response";
+import { requireAuth } from "../../../../../lib/middleware/requireAuth";
+import { getTransactionByReference } from "../../../../../lib/wallet";
+import { sendReceiptMail } from "../../../../../lib/sendReceipts";
 // import { ITransaction } from "../../../../lib/types/wallet";
 
 export async function POST(request: NextRequest) {
