@@ -20,15 +20,15 @@ export const notificationTransporter = nodemailer.createTransport({
 
 export async function sendVerificationEmail(to: string, code: string) {
   const mailOptions = {
-    from: `"Harewa" <${process.env.NOTIFICATION_EMAIL_USER}>`,
+    from: `"Prestige" <${process.env.NOTIFICATION_EMAIL_USER}>`,
     to,
-    subject: "🔐 Email Verification Code – Harewa",
+    subject: "🔐 Email Verification Code – Prestige",
     html: `
       <div style="font-family: Arial, sans-serif; color: #333; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 8px;">
         <h2 style="color: #1e40af;">Verify Your Email</h2>
         <p>Hello,</p>
 
-        <p>You're almost there! Use the verification code below to complete your admin login to <strong>Harewa</strong>:</p>
+        <p>You're almost there! Use the verification code below to complete your account login to <strong>Prestige</strong>:</p>
 
         <div style="text-align: center; margin: 20px 0;">
           <span style="display: inline-block; padding: 12px 24px; background-color: #1e40af; color: #fff; font-size: 24px; letter-spacing: 4px; border-radius: 6px;">
@@ -38,7 +38,7 @@ export async function sendVerificationEmail(to: string, code: string) {
 
         <p>This code is valid for a limited time. If you didn’t initiate this request, you can safely ignore this email.</p>
 
-        <p>Thanks,<br/>The Harewa Team</p>
+        <p>Thanks,<br/>The Prestige Team</p>
 
         <hr style="margin-top: 30px;"/>
         <p style="font-size: 12px; color: #777;">
@@ -53,25 +53,25 @@ export async function sendVerificationEmail(to: string, code: string) {
 
 export async function sendWelcomeEmail(to: string) {
   const mailOptions = {
-    from: `"Harewa" <${process.env.TEAM_EMAIL_USER}>`,
+    from: `"Prestige" <${process.env.TEAM_EMAIL_USER}>`,
     to,
-    subject: "🎉 Welcome to Harewa – Let's Get You Started!",
+    subject: "🎉 Welcome to Prestige – Let's Get You Started!",
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <h2 style="color: #1e40af;">Welcome to Harewa! 🎉</h2>
+        <h2 style="color: #1e40af;">Welcome to Prestige! 🎉</h2>
         <p>Hi there,</p>
 
-        <p>We’re thrilled to have you join the Harewa community! Whether you’re here to explore amazing events or host unforgettable experiences, you're in great company.</p>
+        <p>We’re thrilled to have you join the Prestige community! Whether you’re here to explore amazing events or host unforgettable experiences, you're in great company.</p>
 
         <p>If you have any questions or need support, we’re just an email away.</p>
 
         <p>Thanks for joining us, and welcome once again!</p>
 
-        <p>Cheers,<br/>The Harewa Team</p>
+        <p>Cheers,<br/>The Prestige Team</p>
 
         <hr style="margin-top: 30px;"/>
         <p style="font-size: 12px; color: #777;">
-          You’re receiving this email because you signed up for Harewa. If you didn’t, please ignore this message.
+          You’re receiving this email because you signed up for Prestige. If you didn’t, please ignore this message.
         </p>
       </div>
     `,
@@ -82,13 +82,13 @@ export async function sendWelcomeEmail(to: string) {
 
 export async function resendOtpEmail(to: string, otp: string): Promise<void> {
   const mailOptions = {
-    from: `"Harewa" <${process.env.NOTIFICATION_EMAIL_USER}>`,
+    from: `"Prestige" <${process.env.NOTIFICATION_EMAIL_USER}>`,
     to,
     subject: "Your OTP Verification Code",
     html: `
       <div style="font-family: sans-serif; padding: 1rem;">
         <h2>🔐 Your OTP Code</h2>
-        <p>Use the following code to verify your admin login:</p>
+        <p>Use the following code to verify your account login:</p>
         <h1 style="letter-spacing: 2px;">${otp}</h1>
         <p>This code will expire shortly. If you did not request this, please ignore.</p>
       </div>
@@ -100,7 +100,7 @@ export async function resendOtpEmail(to: string, otp: string): Promise<void> {
 
 export async function sendResetEmail(to: string, url: string): Promise<void> {
   const mailOptions = {
-    from: `"Harewa" <${process.env.NOTIFICATION_EMAIL_USER}>`,
+    from: `"Prestige" <${process.env.NOTIFICATION_EMAIL_USER}>`,
     to,
     subject: "Password Reset",
     html: `
@@ -135,7 +135,7 @@ export const sendFailureMail = async ({
 }) => {
   try {
     const info = await notificationTransporter.sendMail({
-      from: `"Harewa" < ${process.env.NOTIFICATION_EMAIL_USER}> `,
+      from: `"Prestige" < ${process.env.NOTIFICATION_EMAIL_USER}> `,
       to,
       subject,
       html,

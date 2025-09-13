@@ -1,6 +1,6 @@
 // lib/otp.ts
 
-import dbConnect from "../../../../lib/db";
+import dbConnect from "./db";
 import { User } from "./models/User";
 import { signAccessToken, signRefreshToken } from "./jwt";
 

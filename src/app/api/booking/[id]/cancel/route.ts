@@ -1,6 +1,6 @@
-import { Booking } from "../../../../lib/models/Booking";
-import connectDB from "../../../../lib/db";
-import { ok, notFound } from "../../../../lib/response";
+import Booking from "../../../../../lib/models/Booking";
+import connectDB from "../../../../../lib/db";
+import { ok, notFound } from "../../../../../lib/response";
 
 export async function PUT(_: Request, { params }: { params: { id: string } }) {
     await connectDB();

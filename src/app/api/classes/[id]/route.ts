@@ -1,4 +1,4 @@
-import { ClassModel } from "../../../../lib/models/Class";
+import ClassModel from "../../../../lib/models/Class";
 import connectDB from "../../../../lib/db";
 import { ok, notFound } from "../../../../lib/response";
 import { NextRequest } from "next/server";
