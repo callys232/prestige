@@ -23,26 +23,20 @@
       }
     ],
     "paths": {
-      "../../../../*": ["../../../../*"]
+      "../../../../*": [
+        "../../../../*"
+      ]
     },
-    "baseUrl": "./",
+    "baseUrl": "./"
   },
- 
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/components/Footer.jsx",
-    "src/components/Programs.jsx",
-    "src/components/Hero.jsx",
-    "src/components/Navbar.jsx",
-    "src/app/page.jsx",
-    "src/app/context/themeContect.jsx",
-    "next.config.mjs",
-    "src/app/layout.jsx"
-, "src/app/success/page.jsx", "src/app/api/trainers/schedule"  ],
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+, "src/app/success/PaystackSuccess.jsx"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next"
   ]
 }

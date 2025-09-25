@@ -33,6 +33,7 @@ export default function handler(req, res) {
 
     return res.status(200).json(progress);
   } catch (err) {
+    console.error(err);
     return res.status(401).json({ message: "Invalid token" });
   }
 }
