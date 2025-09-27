@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const NavBar = () => {
@@ -24,14 +25,45 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="w-full bg-white border-b-2 border-blue-700 px-2 py-3">
+    <nav className="sticky top-0 z-50 w-full bg-white border-b-2 border-blue-700 px-2 py-3 shadow-md">
       <div className="flex items-center justify-between px-4 md:px-8 py-4">
-        {/* Login/Signup */}
-        <div>
+        {/* Logo on the left */}
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo.png" // replace with your logo in /public
+              alt="Prestige Gym Logo"
+              width={120}
+              height={40}
+              priority
+            />
+          </Link>
+        </div>
+
+        {/* Desktop Navigation (center) */}
+        <ul className="hidden md:flex flex-wrap gap-x-4 gap-y-2 text-[#0B56A3] font-medium text-sm uppercase">
+          {navItems.map(({ label, href }) => (
+            <li key={label}>
+              <Link
+                href={href}
+                className={`relative inline-block px-2 py-1 transition duration-300 ease-in-out hover:text-white hover:bg-blue-950 hover:rounded-md hover:scale-105 ${
+                  pathname === href ? "text-white bg-blue-950 rounded-md" : ""
+                }`}
+              >
+                <span className="after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full">
+                  {label}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Login/Signup on the right */}
+        <div className="hidden md:flex gap-2">
           <Link
             href="/login"
             onClick={handleClick}
-            className={`inline-block border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
+            className={`border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
               isClicked
                 ? "bg-[#0B56A3] text-blue-100 border-[#0B56A3] scale-95"
                 : "border-[#0652A6] text-[#0652A6] hover:bg-[#0B56A3] hover:text-blue-200"
@@ -39,9 +71,20 @@ const NavBar = () => {
           >
             Login
           </Link>
+          <Link
+            href="/signup"
+            onClick={handleClick}
+            className={`border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
+              isClicked
+                ? "bg-[#0B56A3] text-blue-100 border-[#0B56A3] scale-95"
+                : "border-[#0652A6] text-[#0652A6] hover:bg-[#0B56A3] hover:text-blue-200"
+            }`}
+          >
+            Sign Up
+          </Link>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger (right) */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden text-[#0652A6] focus:outline-none"
@@ -69,24 +112,6 @@ const NavBar = () => {
             )}
           </svg>
         </button>
-
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex flex-wrap gap-x-4 gap-y-2 text-[#0B56A3] font-medium text-sm uppercase">
-          {navItems.map(({ label, href }) => (
-            <li key={label}>
-              <Link
-                href={href}
-                className={`relative inline-block px-2 py-1 transition duration-300 ease-in-out hover:text-white hover:bg-blue-950 hover:rounded-md hover:scale-105 ${
-                  pathname === href ? "text-white bg-blue-950 rounded-md" : ""
-                }`}
-              >
-                <span className="after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-black after:transition-all after:duration-300 hover:after:w-full">
-                  {label}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </div>
 
       {/* Mobile Nav Links */}
@@ -107,6 +132,22 @@ const NavBar = () => {
               </Link>
             </li>
           ))}
+
+          {/* Mobile Login/Signup */}
+          <div className="flex gap-2 mt-4">
+            <Link
+              href="/login"
+              className="border border-[#0652A6] text-[#0652A6] px-4 py-1.5 rounded-md text-sm hover:bg-[#0B56A3] hover:text-blue-200"
+            >
+              Login
+            </Link>
+            {/* <Link
+              href="/signup"
+              className="border border-[#0652A6] text-[#0652A6] px-4 py-1.5 rounded-md text-sm hover:bg-[#0B56A3] hover:text-blue-200"
+            >
+              Sign Up
+            </Link> */}
+          </div>
         </ul>
       )}
     </nav>
