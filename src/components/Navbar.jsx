@@ -76,6 +76,13 @@ const NavBar = () => {
           >
             LoginWithoutPassword
           </Link>
+          <Link
+            href="/AdminDash"
+            onClick={handleClick}
+            className={buttonClasses}
+          >
+            AdminDashWNP
+          </Link>
         </div>
 
         {/* Mobile Hamburger */}
@@ -138,6 +145,13 @@ const NavBar = () => {
               className={buttonClasses}
             >
               LoginWithoutPassword
+            </Link>
+            <Link
+              href="/AdminDash"
+              onClick={handleClick}
+              className={buttonClasses}
+            >
+              AdminDashWNP
             </Link>
           </div>
         </ul>

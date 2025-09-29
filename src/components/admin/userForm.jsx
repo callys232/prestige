@@ -1,9 +1,13 @@
+"use client";
+
 import { useState } from "react";
 
 const UserForm = ({ section }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    membershipType: "",
+    assignedTrainer: "",
     trainerName: "",
   });
 
@@ -27,6 +31,8 @@ const UserForm = ({ section }) => {
         payload = {
           username: formData.username,
           password: formData.password,
+          membershipType: formData.membershipType,
+          assignedTrainer: formData.assignedTrainer,
         };
       } else if (section === "Trainer Management") {
         endpoint = "/api/admin/create-trainer";
@@ -45,7 +51,13 @@ const UserForm = ({ section }) => {
 
       if (res.ok) {
         setStatus({ success: true, message: result.message || "Saved!" });
-        setFormData({ username: "", password: "", trainerName: "" });
+        setFormData({
+          username: "",
+          password: "",
+          membershipType: "",
+          assignedTrainer: "",
+          trainerName: "",
+        });
       } else {
         throw new Error(result.message || "Something went wrong.");
       }
@@ -55,8 +67,8 @@ const UserForm = ({ section }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-lg p-6 rounded w-full max-w-lg">
-      <h2 className="text-xl font-bold mb-4 text-gray-700 dark:text-white">
+    <div className="bg-white dark:bg-gray-800 shadow-xl rounded-xl p-6 w-full max-w-lg transform transition-all duration-300 ease-in-out hover:scale-[1.01]">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
         {section}
       </h2>
 
@@ -67,7 +79,8 @@ const UserForm = ({ section }) => {
             value={formData.username}
             onChange={handleChange}
             placeholder="Username"
-            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md"
+            className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md"
+            required
           />
           <input
             name="password"
@@ -75,13 +88,33 @@ const UserForm = ({ section }) => {
             value={formData.password}
             onChange={handleChange}
             placeholder="Password"
-            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md"
+            className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md"
+            required
+          />
+          <select
+            name="membershipType"
+            value={formData.membershipType}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md"
+            required
+          >
+            <option value="">Select Membership Type</option>
+            <option value="Basic">Basic</option>
+            <option value="Premium">Premium</option>
+            <option value="Elite">Elite</option>
+          </select>
+          <input
+            name="assignedTrainer"
+            value={formData.assignedTrainer}
+            onChange={handleChange}
+            placeholder="Assigned Trainer"
+            className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md"
           />
           <button
             type="submit"
-            className="btn bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            className="bg-prestigeTeal text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
           >
-            Add User
+            Add Member
           </button>
         </form>
       )}
@@ -93,11 +126,12 @@ const UserForm = ({ section }) => {
             value={formData.trainerName}
             onChange={handleChange}
             placeholder="Trainer Name"
-            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md"
+            className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md"
+            required
           />
           <button
             type="submit"
-            className="btn bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
           >
             Add Trainer
           </button>
@@ -105,10 +139,8 @@ const UserForm = ({ section }) => {
       )}
 
       {section === "Bookings & Attendance" && (
-        <div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Booking module coming soon...
-          </p>
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Booking module coming soon...
         </div>
       )}
 
