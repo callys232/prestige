@@ -58,7 +58,7 @@ const NavBar = () => {
           ))}
         </ul>
 
-        {/* Login/Signup on the right */}
+        {/* Login on the right */}
         <div className="hidden md:flex gap-2">
           <Link
             href="/login"
@@ -71,7 +71,7 @@ const NavBar = () => {
           >
             Login
           </Link>
-          <Link
+          {/* <Link
             href="/signup"
             onClick={handleClick}
             className={`border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
@@ -81,7 +81,7 @@ const NavBar = () => {
             }`}
           >
             Sign Up
-          </Link>
+          </Link> */}
         </div>
 
         {/* Mobile Hamburger (right) */}
@@ -133,7 +133,7 @@ const NavBar = () => {
             </li>
           ))}
 
-          {/* Mobile Login/Signup */}
+          {/* Mobile Login*/}
           <div className="flex gap-2 mt-4">
             <Link
               href="/login"
@@ -141,12 +141,6 @@ const NavBar = () => {
             >
               Login
             </Link>
-            {/* <Link
-              href="/signup"
-              className="border border-[#0652A6] text-[#0652A6] px-4 py-1.5 rounded-md text-sm hover:bg-[#0B56A3] hover:text-blue-200"
-            >
-              Sign Up
-            </Link> */}
           </div>
         </ul>
       )}
