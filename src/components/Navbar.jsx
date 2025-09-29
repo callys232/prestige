@@ -71,6 +71,17 @@ const NavBar = () => {
           >
             Login
           </Link>
+          <Link
+            href="/dashboard"
+            onClick={handleClick}
+            className={`border font-medium px-4 py-1.5 rounded-md text-sm transition duration-200 ${
+              isClicked
+                ? "bg-[#0B56A3] text-blue-100 border-[#0B56A3] scale-95"
+                : "border-[#0652A6] text-[#0652A6] hover:bg-[#0B56A3] hover:text-blue-200"
+            }`}
+          >
+            LoginWithoutPassword
+          </Link>
           {/* <Link
             href="/signup"
             onClick={handleClick}
