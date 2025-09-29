@@ -1,80 +1,89 @@
 import { NextResponse } from "next/server";
 
-type ResponseData = Record<string, unknown> | unknown | unknown[] | null;
+// Define the shape of allowed response data
+export type ResponseData =
+  | Record<string, unknown>
+  | object // ✅ allows plain objects (e.g., Mongoose .toObject())
+  | unknown[]
+  | string
+  | number
+  | boolean
+  | null;
 
+// Success response structure
 interface SuccessBody {
-    success: true;
-    message: string;
-    data?: ResponseData;
+  success: true;
+  message: string;
+  data?: ResponseData;
 }
 
+// Error response structure
 interface ErrorBody {
-    success: false;
-    error: string;
+  success: false;
+  error: string;
 }
 
+// Core response builder for success
 export function jsonResponse(
-    data: ResponseData,
-    status: number = 200,
-    message: string = "Success"
+  data: ResponseData,
+  status: number = 200,
+  message: string = "Success"
 ): NextResponse {
-    const body: SuccessBody = {
-        success: true,
-        message,
-    };
+  const body: SuccessBody = { success: true, message };
 
-    if (data !== null && typeof data !== "undefined") {
-        body.data = data;
-    }
+  if (data !== null && typeof data !== "undefined") {
+    body.data = data;
+  }
 
-    return new NextResponse(JSON.stringify(body), {
-        status,
-        headers: { "Content-Type": "application/json" },
-    });
+  return new NextResponse(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
+// Core response builder for errors
 export function errorResponse(
-    message: string,
-    status: number = 400
+  message: string,
+  status: number = 400
 ): NextResponse {
-    const body: ErrorBody = {
-        success: false,
-        error: message,
-    };
+  const body: ErrorBody = { success: false, error: message };
 
-    return new NextResponse(JSON.stringify(body), {
-        status,
-        headers: { "Content-Type": "application/json" },
-    });
+  return new NextResponse(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
-// ✅ Semantic helpers
+// ✅ Semantic helpers for success
 export function ok(data: ResponseData, message = "Success") {
-    return jsonResponse(data, 200, message);
+  return jsonResponse(data, 200, message);
 }
 
 export function created(data: ResponseData, message = "Created") {
-    return jsonResponse(data, 201, message);
-}
-export function uploaded(data: ResponseData, message = "Uploaded") {
-    return jsonResponse(data, 200, message);
+  return jsonResponse(data, 201, message);
 }
 
+export function uploaded(data: ResponseData, message = "Uploaded") {
+  return jsonResponse(data, 200, message);
+}
+
+// ✅ Semantic helpers for errors
 export function badRequest(message = "Bad Request") {
-    return errorResponse(message, 400);
+  return errorResponse(message, 400);
 }
 
 export function unauthorized(message = "Unauthorized") {
-    return errorResponse(message, 401);
+  return errorResponse(message, 401);
 }
 
 export function notFound(message = "Not Found") {
-    return errorResponse(message, 404);
+  return errorResponse(message, 404);
 }
 
 export function serverError(message = "Something went wrong") {
-    return errorResponse(message, 500);
+  return errorResponse(message, 500);
 }
+
 export function conflict(message = "Conflict") {
-    return errorResponse(message, 409);
+  return errorResponse(message, 409);
 }
