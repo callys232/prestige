@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { ReactTyped } from "react-typed";
 
 const HeroSection = () => {
   const [isDark, setIsDark] = useState(false);
@@ -13,65 +15,80 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative bg-cover bg-center bg-no-repeat py-10 px-4 text-white"
+      className="relative bg-cover bg-center bg-no-repeat py-16 px-4 text-white overflow-hidden"
       style={{ backgroundImage: "url('/Hero.png')" }}
     >
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/30 to-black/5 backdrop-blur-md dark:from-black/40 dark:to-black/10" />
+      {/* Animated Gradient Overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, backgroundPosition: ["0% 50%", "100% 50%"] }}
+        transition={{ duration: 10, repeat: Infinity, repeatType: "mirror" }}
+        className="absolute inset-0 z-0 bg-gradient-to-r from-black/40 via-black/20 to-black/40 bg-[length:200%_200%] backdrop-blur-md"
+      />
 
       {/* Centered Content */}
-      <div className="relative z-10 max-w-[90vw] md:max-w-md mx-auto text-center space-y-4">
-        <p
-          className="uppercase text-sm md:text-base font-medium tracking-wide 
-             opacity-0 animate-fadeInUp [animation-delay:200ms] [animation-fill-mode:forwards]"
+      <div className="relative z-10 max-w-[90vw] md:max-w-2xl mx-auto text-center space-y-6">
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="uppercase text-sm md:text-base font-medium tracking-wide"
         >
           Train with purpose, transform with pride
-        </p>
+        </motion.p>
 
-        <h1
-          className="text-4xl sm:text-5xl md:text-7xl font-extrabold uppercase tracking-tight whitespace-nowrap 
-             opacity-0 animate-fadeInUp [animation-delay:500ms] [animation-fill-mode:forwards]"
+        {/* Typewriter Heading */}
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          aria-label="Prestige Gym"
+          className="text-4xl sm:text-5xl md:text-7xl font-extrabold uppercase tracking-tight 
+                     bg-gradient-to-r from-blue-400 via-pink-400 to-purple-500 bg-clip-text text-transparent"
         >
-          Prestige Gym
-        </h1>
+          <ReactTyped
+            strings={["Prestige Gym"]}
+            typeSpeed={80}
+            backSpeed={40}
+            backDelay={1500}
+            loop
+            showCursor
+            cursorChar="|"
+          />
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, letterSpacing: "0.5em" }}
+          animate={{ opacity: 1, letterSpacing: "0em" }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="uppercase text-sm md:text-base font-medium tracking-wide"
+        >
+          "Strength. Discipline. Prestige."
+        </motion.p>
 
-        <div className="flex justify-center flex-wrap gap-4 font-semibold text-lg sm:text-xl md:text-2xl tracking-wider">
-          <span className="opacity-0 animate-fadeInUp [animation-delay:800ms] [animation-fill-mode:forwards]">
-            Strength
-          </span>
-          <span className="opacity-0 animate-fadeInUp [animation-delay:1000ms] [animation-fill-mode:forwards]">
-            Discipline
-          </span>
-          <span className="opacity-0 animate-fadeInUp [animation-delay:1200ms] [animation-fill-mode:forwards]">
-            Prestige
-          </span>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
           <Link href="/signUp">
-            <button
-              className="bg-[#1F5C8E] sm:bg-white text-white sm:text-[#1F5C8E] font-semibold px-6 py-3 rounded-md text-sm sm:text-base uppercase 
-               hover:bg-[#174a71] sm:hover:bg-gray-100 
-               active:bg-[#174a71] sm:active:bg-gray-200 
-               active:scale-95 active:shadow-inner 
-               focus:bg-[#174a71] focus:outline-none 
-               transition duration-200 ease-out"
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0px 0px 12px #1F5C8E" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-[#1F5C8E] sm:bg-white text-white sm:text-[#1F5C8E] font-semibold px-8 py-3 rounded-md text-sm sm:text-base uppercase transition"
             >
               Join Now
-            </button>
+            </motion.button>
           </Link>
 
           <Link href="/signup">
-            <button
-              className="border border-white sm:border-[#1F5C8E] text-white px-8 py-3 rounded-md text-sm sm:text-base uppercase 
-  animate-fadeUp
-  hover:bg-white hover:text-[#1F5C8E] hover:animate-pulse
-  active:bg-white active:text-white active:scale-95 active:shadow-inner
-  focus:bg-white focus:text-[#1F5C8E] focus:outline-none
-  transition duration-200 ease-out"
+            <motion.button
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "#fff",
+                color: "#1F5C8E",
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="border border-white sm:border-[#1F5C8E] text-white px-8 py-3 rounded-md text-sm sm:text-base uppercase transition"
             >
               Book a Tour
-            </button>
+            </motion.button>
           </Link>
         </div>
       </div>

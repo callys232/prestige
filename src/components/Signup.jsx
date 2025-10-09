@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function SignupForm() {
   const searchParams = useSearchParams();
@@ -18,6 +19,10 @@ export default function SignupForm() {
     className: prefillClass || "",
     trainer: prefillTrainer || "",
   });
+
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -36,19 +41,47 @@ export default function SignupForm() {
     "General Fitness",
   ];
 
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email";
+    if (formData.password.length < 8)
+      newErrors.password = "Password must be at least 8 characters";
+    if (!formData.gender) newErrors.gender = "Please select a gender";
+    if (!formData.goal) newErrors.goal = "Please select a goal";
+    if (!formData.trainer) newErrors.trainer = "Please select a trainer";
+    return newErrors;
+  };
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup data:", formData);
-    // TODO: send to backend
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
+    setLoading(true);
+    try {
+      console.log("Signup data:", formData);
+      // TODO: send to backend
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"
+      >
         <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
           Join Prestige Gym
         </h2>
@@ -60,11 +93,13 @@ export default function SignupForm() {
             <input
               type="text"
               name="name"
-              required
               value={formData.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
+            {errors.name && (
+              <p className="text-xs text-red-500">{errors.name}</p>
+            )}
           </div>
 
           {/* Email */}
@@ -73,28 +108,39 @@ export default function SignupForm() {
             <input
               type="email"
               name="email"
-              required
+              autoComplete="email"
               value={formData.email}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
+            {errors.email && (
+              <p className="text-xs text-red-500">{errors.email}</p>
+            )}
           </div>
 
           {/* Password */}
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              required
-              minLength={8}
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Minimum 8 characters required
-            </p>
+            <div className="flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="ml-2 text-xs text-blue-600"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-xs text-red-500">{errors.password}</p>
+            )}
           </div>
 
           {/* Gender */}
@@ -102,10 +148,12 @@ export default function SignupForm() {
             <label className="block text-sm font-medium mb-1">Gender</label>
             <select
               name="gender"
-              required
               value={formData.gender}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md 
+                         bg-white text-gray-800 
+                         dark:bg-gray-700 dark:text-white 
+                         focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-- Select Gender --</option>
               <option value="Female">Female</option>
@@ -113,6 +161,9 @@ export default function SignupForm() {
               <option value="Non-binary">Non-binary</option>
               <option value="Prefer not to say">Prefer not to say</option>
             </select>
+            {errors.gender && (
+              <p className="text-xs text-red-500">{errors.gender}</p>
+            )}
           </div>
 
           {/* Fitness Goal */}
@@ -122,10 +173,12 @@ export default function SignupForm() {
             </label>
             <select
               name="goal"
-              required
               value={formData.goal}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md 
+                         bg-white text-gray-800 
+                         dark:bg-gray-700 dark:text-white 
+                         focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-- Select Goal --</option>
               {goals.map((g) => (
@@ -134,9 +187,12 @@ export default function SignupForm() {
                 </option>
               ))}
             </select>
+            {errors.goal && (
+              <p className="text-xs text-red-500">{errors.goal}</p>
+            )}
           </div>
 
-          {/* Class (readonly if prefilled) */}
+          {/* Class */}
           <div>
             <label className="block text-sm font-medium mb-1">Class</label>
             <input
@@ -149,7 +205,7 @@ export default function SignupForm() {
             />
           </div>
 
-          {/* Trainer (dropdown if not prefilled) */}
+          {/* Trainer */}
           <div>
             <label className="block text-sm font-medium mb-1">Trainer</label>
             {prefillTrainer ? (
@@ -163,10 +219,12 @@ export default function SignupForm() {
             ) : (
               <select
                 name="trainer"
-                required
                 value={formData.trainer}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md 
+                           bg-white text-gray-800 
+                           dark:bg-gray-700 dark:text-white 
+                           focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">-- Choose a Trainer --</option>
                 {trainers.map((t) => (
@@ -176,14 +234,18 @@ export default function SignupForm() {
                 ))}
               </select>
             )}
+            {errors.trainer && (
+              <p className="text-xs text-red-500">{errors.trainer}</p>
+            )}
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white py-2 rounded-md font-semibold hover:bg-blue-800 transition"
+            disabled={loading}
+            className="w-full bg-blue-700 text-white py-2 rounded-md font-semibold hover:bg-blue-800 transition disabled:opacity-50"
           >
-            Sign Up
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
         </form>
 
@@ -193,7 +255,7 @@ export default function SignupForm() {
             Login
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

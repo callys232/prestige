@@ -21,10 +21,11 @@ export default function UserLoginPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: username, password, }),
+        body: JSON.stringify({ email: username, password }),
       });
 
       const result = await response.json();
+      console.log(result);
 
       if (!response.ok)
         throw new Error(result.message || "Invalid credentials");

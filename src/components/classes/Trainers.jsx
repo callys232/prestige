@@ -11,7 +11,7 @@ const trainers = [
     image: "/trainer-aisha.png",
     classes: ["HIIT", "Strength Training"],
     diet: "High-protein, balanced carbs",
-    color: "group-hover:bg-blue-100",
+    color: "bg-blue-100",
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const trainers = [
     image: "/trainer-david.jpg",
     classes: ["Yoga", "Flexibility"],
     diet: "Plant-based, light meals",
-    color: "group-hover:bg-green-100",
+    color: "bg-green-100",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const trainers = [
     image: "/trainer-emeka.jpg",
     classes: ["Boxing", "Cardio"],
     diet: "Lean protein, low fat",
-    color: "group-hover:bg-red-100",
+    color: "bg-red-100",
   },
   {
     id: 4,
@@ -35,13 +35,13 @@ const trainers = [
     image: "/trainer-grace.jpg",
     classes: ["Pilates", "Core Strength"],
     diet: "Mediterranean style",
-    color: "group-hover:bg-purple-100",
+    color: "bg-purple-100",
   },
 ];
 
 export default function TrainersSection() {
   const [selected, setSelected] = useState({});
-  // { trainerId: className }
+  const [openTrainer, setOpenTrainer] = useState(null); // 👈 track which trainer is open on mobile
 
   const handleClassSelect = (trainerId, className) => {
     setSelected((prev) => ({ ...prev, [trainerId]: className }));
@@ -56,10 +56,12 @@ export default function TrainersSection() {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {trainers.map((trainer) => {
           const chosenClass = selected[trainer.id] || "";
+          const isOpen = openTrainer === trainer.id;
+
           return (
             <div
               key={trainer.id}
-              className={`group relative border border-[#1F5C8E] rounded-lg overflow-hidden shadow-md transition duration-300`}
+              className="group relative border border-[#1F5C8E] rounded-lg overflow-hidden shadow-md transition duration-300"
             >
               {/* Trainer Image */}
               <Image
@@ -70,9 +72,26 @@ export default function TrainersSection() {
                 className="object-cover w-full h-64"
               />
 
-              {/* Hidden Content - shows on hover */}
+              {/* Toggle button for mobile */}
+              <button
+                onClick={() => setOpenTrainer(isOpen ? null : trainer.id)}
+                className="absolute top-2 right-2 bg-white/80 dark:bg-gray-800/80 px-2 py-1 text-xs rounded shadow sm:hidden"
+              >
+                {isOpen ? "Close" : "Info"}
+              </button>
+
+              {/* Hidden Content */}
               <div
-                className={`absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-white/90 dark:bg-gray-800/90 opacity-0 group-hover:opacity-100 transition duration-300 ${trainer.color}`}
+                className={`
+                  absolute inset-0 flex flex-col justify-center items-center text-center p-6 
+                  bg-white/95 dark:bg-gray-800/95 transition duration-300
+                  ${trainer.color}
+                  ${
+                    isOpen
+                      ? "opacity-100"
+                      : "opacity-0 sm:group-hover:opacity-100"
+                  }
+                `}
               >
                 <h3 className="text-xl font-semibold text-[#1F5C8E] mb-2">
                   {trainer.name}
@@ -103,8 +122,7 @@ export default function TrainersSection() {
                   {trainer.diet}
                 </p>
 
-                {/* Show Join Now only if a class is chosen */}
-                {/* {chosenClass && (
+                {chosenClass && (
                   <Link
                     href={{
                       pathname: "/signup",
@@ -114,7 +132,7 @@ export default function TrainersSection() {
                   >
                     Join Now
                   </Link>
-                )} */}
+                )}
               </div>
             </div>
           );
