@@ -44,7 +44,7 @@ const HeroSection = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           aria-label="Prestige Gym"
           className="text-4xl sm:text-5xl md:text-7xl font-extrabold uppercase tracking-tight 
-                     bg-gradient-to-r from-blue-400 via-pink-400 to-purple-500 bg-clip-text text-transparent"
+                     bg-gradient-to-r from-blue-200 via-blue-400 to-purple-600 bg-clip-text text-transparent"
         >
           <ReactTyped
             strings={["Prestige Gym"]}
@@ -77,7 +77,7 @@ const HeroSection = () => {
             </motion.button>
           </Link>
 
-          <Link href="/signup">
+          <Link href="/membership">
             <motion.button
               whileHover={{
                 scale: 1.05,

@@ -45,7 +45,7 @@ export default function Footer() {
             {/* Trainers → emerald */}
             <li>
               <Link
-                href="/trainers"
+                href="/classes"
                 className="
           relative inline-block
           transition-colors duration-200
