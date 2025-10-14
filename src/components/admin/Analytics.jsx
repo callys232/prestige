@@ -150,7 +150,7 @@ export default function AnalyticsPage() {
         {
           label: "Active Members",
           data: timeSeries.activeCounts,
-          borderColor: "#2563EB",
+          borderColor: "#188db0ff",
           backgroundColor: "rgba(37,99,235,0.08)",
           tension: 0.25,
           pointRadius: 2,
