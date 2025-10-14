@@ -7,7 +7,7 @@ export default function ActivityManager() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
-  const [showUserForm, setShowUserForm] = useState(false); // modal toggle
+  const [showUserForm, setShowUserForm] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -18,6 +18,7 @@ export default function ActivityManager() {
     setLoading(true);
     try {
       const res = await fetch("/api/admin/stats");
+      if (!res.ok) throw new Error("Failed to fetch stats");
       const data = await res.json();
       setStats(data);
     } catch (err) {
@@ -30,6 +31,7 @@ export default function ActivityManager() {
   const fetchUsers = async () => {
     try {
       const res = await fetch("/api/admin/users?status=suspended");
+      if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
       setUsers(data);
     } catch (err) {
@@ -38,21 +40,29 @@ export default function ActivityManager() {
   };
 
   const handleReactivate = async (userId) => {
-    await fetch("/api/admin/reactivate-user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
-    });
-    fetchStats();
-    fetchUsers();
+    try {
+      await fetch("/api/admin/reactivate-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      fetchStats();
+      fetchUsers();
+    } catch {
+      setStatus("Failed to reactivate user");
+    }
   };
 
   const handleDelete = async (userId) => {
-    await fetch(`/api/admin/delete-user?userId=${userId}`, {
-      method: "DELETE",
-    });
-    fetchStats();
-    fetchUsers();
+    try {
+      await fetch(`/api/admin/delete-user?userId=${userId}`, {
+        method: "DELETE",
+      });
+      fetchStats();
+      fetchUsers();
+    } catch {
+      setStatus("Failed to delete user");
+    }
   };
 
   return (
@@ -177,10 +187,20 @@ export default function ActivityManager() {
 }
 
 function StatCard({ label, value, color }) {
+  const colorClasses = {
+    blue: "border-blue-500",
+    green: "border-green-500",
+    yellow: "border-yellow-500",
+    indigo: "border-indigo-500",
+    red: "border-red-500",
+    orange: "border-orange-500",
+    gray: "border-gray-500",
+  };
+
   return (
     <div
       className={`p-4 rounded shadow text-center border-t-4 
-                  bg-white dark:bg-gray-800 border-${color}-500`}
+                  bg-white dark:bg-gray-800 ${colorClasses[color]}`}
     >
       <p className="text-sm text-gray-500">{label}</p>
       <p className="text-2xl font-bold text-gray-800 dark:text-white">

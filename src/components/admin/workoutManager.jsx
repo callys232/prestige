@@ -1,82 +1,131 @@
 "use client";
 import { useState, useEffect } from "react";
 
+function ExerciseForm({ planId, onAdded }) {
+  const [name, setName] = useState("");
+  const [sets, setSets] = useState("");
+  const [reps, setReps] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim() || !sets || !reps) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/admin/add-exercise?planId=${planId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, sets, reps }),
+      });
+      const result = await res.json();
+      onAdded(result.message, res.ok);
+      setName("");
+      setSets("");
+      setReps("");
+    } catch (err) {
+      onAdded("Failed to add exercise", false);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-3 flex gap-2 items-center">
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Exercise"
+        className="px-2 py-1 border rounded text-sm"
+      />
+      <input
+        value={sets}
+        onChange={(e) => setSets(e.target.value)}
+        placeholder="Sets"
+        className="w-16 px-2 py-1 border rounded text-sm"
+      />
+      <input
+        value={reps}
+        onChange={(e) => setReps(e.target.value)}
+        placeholder="Reps"
+        className="w-16 px-2 py-1 border rounded text-sm"
+      />
+      <button
+        type="submit"
+        disabled={submitting}
+        className="bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+      >
+        {submitting ? "Adding…" : "Add"}
+      </button>
+    </form>
+  );
+}
+
 export default function WorkoutManager() {
   const [plans, setPlans] = useState([]);
   const [planName, setPlanName] = useState("");
   const [status, setStatus] = useState(null);
-
-  // exercise form state
-  const [exerciseName, setExerciseName] = useState("");
-  const [exerciseReps, setExerciseReps] = useState("");
-  const [exerciseSets, setExerciseSets] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPlans();
   }, []);
 
   const fetchPlans = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/admin/workout-plans");
       const data = await res.json();
       setPlans(data);
     } catch (err) {
-      setStatus("Failed to load plans");
+      setStatus({ msg: "Failed to load plans", ok: false });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCreatePlan = async (e) => {
     e.preventDefault();
     if (!planName.trim()) return;
-    const res = await fetch("/api/admin/create-workout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: planName }),
-    });
-    const result = await res.json();
-    setStatus(result.message);
-    setPlanName("");
-    fetchPlans();
+    try {
+      const res = await fetch("/api/admin/create-workout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: planName }),
+      });
+      const result = await res.json();
+      setStatus({ msg: result.message, ok: res.ok });
+      setPlanName("");
+      fetchPlans();
+    } catch {
+      setStatus({ msg: "Failed to create plan", ok: false });
+    }
   };
 
   const handleDeletePlan = async (id) => {
-    const res = await fetch(`/api/admin/delete-workout?id=${id}`, {
-      method: "DELETE",
-    });
-    const result = await res.json();
-    setStatus(result.message);
-    fetchPlans();
-  };
-
-  const handleAddExercise = async (e) => {
-    e.preventDefault();
-    if (!selectedPlan) return;
-    const res = await fetch(`/api/admin/add-exercise?planId=${selectedPlan}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: exerciseName,
-        reps: exerciseReps,
-        sets: exerciseSets,
-      }),
-    });
-    const result = await res.json();
-    setStatus(result.message);
-    setExerciseName("");
-    setExerciseReps("");
-    setExerciseSets("");
-    fetchPlans();
+    try {
+      const res = await fetch(`/api/admin/delete-workout?id=${id}`, {
+        method: "DELETE",
+      });
+      const result = await res.json();
+      setStatus({ msg: result.message, ok: res.ok });
+      fetchPlans();
+    } catch {
+      setStatus({ msg: "Failed to delete plan", ok: false });
+    }
   };
 
   const handleDeleteExercise = async (planId, exerciseId) => {
-    const res = await fetch(
-      `/api/admin/delete-exercise?planId=${planId}&exerciseId=${exerciseId}`,
-      { method: "DELETE" }
-    );
-    const result = await res.json();
-    setStatus(result.message);
-    fetchPlans();
+    try {
+      const res = await fetch(
+        `/api/admin/delete-exercise?planId=${planId}&exerciseId=${exerciseId}`,
+        { method: "DELETE" }
+      );
+      const result = await res.json();
+      setStatus({ msg: result.message, ok: res.ok });
+      fetchPlans();
+    } catch {
+      setStatus({ msg: "Failed to delete exercise", ok: false });
+    }
   };
 
   return (
@@ -99,7 +148,17 @@ export default function WorkoutManager() {
         </button>
       </form>
 
-      {status && <p className="text-sm text-green-600 mb-4">{status}</p>}
+      {status && (
+        <p
+          className={`text-sm mb-4 ${
+            status.ok ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {status.msg}
+        </p>
+      )}
+
+      {loading && <p className="text-sm text-gray-500">Loading plans…</p>}
 
       {/* Plans List */}
       <ul className="space-y-4">
@@ -142,36 +201,13 @@ export default function WorkoutManager() {
             </ul>
 
             {/* Add Exercise Form */}
-            <form
-              onSubmit={handleAddExercise}
-              className="mt-3 flex gap-2 items-center"
-            >
-              <input
-                value={exerciseName}
-                onChange={(e) => setExerciseName(e.target.value)}
-                placeholder="Exercise"
-                className="px-2 py-1 border rounded text-sm"
-              />
-              <input
-                value={exerciseSets}
-                onChange={(e) => setExerciseSets(e.target.value)}
-                placeholder="Sets"
-                className="w-16 px-2 py-1 border rounded text-sm"
-              />
-              <input
-                value={exerciseReps}
-                onChange={(e) => setExerciseReps(e.target.value)}
-                placeholder="Reps"
-                className="w-16 px-2 py-1 border rounded text-sm"
-              />
-              <button
-                type="submit"
-                onClick={() => setSelectedPlan(plan._id)}
-                className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
-              >
-                Add
-              </button>
-            </form>
+            <ExerciseForm
+              planId={plan._id}
+              onAdded={(msg, ok) => {
+                setStatus({ msg, ok });
+                fetchPlans();
+              }}
+            />
           </li>
         ))}
       </ul>

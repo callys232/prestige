@@ -231,7 +231,7 @@ export default function UserForm({ section = "User Management", onSuccess }) {
               name="trainerName"
               value={formData.trainerName}
               onChange={handleChange}
-              placeholder="e.g., Musa Ahmed"
+              placeholder="e.g., Trainer Dave"
               disabled={submitting}
               className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md"
               required

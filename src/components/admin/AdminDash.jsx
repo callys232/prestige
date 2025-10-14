@@ -4,6 +4,8 @@ import Sidebar from "./sidePanel";
 import UserForm from "./userForm";
 import WorkoutForm from "./workoutManager";
 import ActivityForm from "./activityManager";
+import Analytics from "./Analytics";
+import Notifications from "./notifications";
 
 const AdminDashboard = () => {
   const [selectedSection, setSelectedSection] = useState("User Management");
@@ -16,8 +18,12 @@ const AdminDashboard = () => {
         return <WorkoutForm />;
       case "Work Activities":
         return <ActivityForm />;
+      case "Analytics":
+        return <Analytics />;
+      case "Notifications":
+        return <Notifications />;
       default:
-        return <div>Select a section from the sidebar</div>;
+        return <div>Select a section from the sidepanel</div>;
     }
   };
 

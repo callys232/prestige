@@ -2,21 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-/**
- * Enhanced UserManager for gym admin
- * - Shows members list with status, membership expiry, trainer
- * - Create new member (membership type, expiry, trainer, contact)
- * - Edit, Delete, Suspend, Reactivate actions with confirmation modal
- * - Loading / submitting states and inline status messages
- *
- * Expects backend endpoints:
- * GET    /api/admin/users
- * POST   /api/admin/create-user
- * PUT    /api/admin/update-user?id=...
- * DELETE /api/admin/delete-user?id=...
- * POST   /api/admin/action-user  { id, action }
- */
-
 export default function UserManager() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,13 +31,15 @@ export default function UserManager() {
 
   const fetchUsers = async () => {
     setLoading(true);
+    setStatusMsg(null);
     try {
-      const res = await fetch("/api/admin/users");
-      if (!res.ok) throw new Error("Failed to load users");
+      const res = await fetch("/api/admin/users", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load users (${res.status})`);
       const data = await res.json();
+      const normalized = Array.isArray(data) ? data : data?.users || [];
       setUsers(
-        data.map((u) => ({
-          id: u._id || u.id,
+        normalized.map((u) => ({
+          id: u._id || u.id || `${Math.random()}`,
           username: u.username || u.name || "—",
           email: u.email || "",
           phone: u.phone || "",
@@ -63,6 +50,29 @@ export default function UserManager() {
         }))
       );
     } catch (err) {
+      // Fallback mock so UI still displays
+      setUsers([
+        {
+          id: "mock-1",
+          username: "Ada Lovelace",
+          email: "ada@example.com",
+          phone: "+2348000000000",
+          status: "active",
+          membershipType: "Premium",
+          membershipExpires: new Date(Date.now() + 30 * 864e5).toISOString(),
+          assignedTrainer: "trainer_1",
+        },
+        {
+          id: "mock-2",
+          username: "Chinua Achebe",
+          email: "chinua@example.com",
+          phone: "+2348111111111",
+          status: "suspended",
+          membershipType: "Basic",
+          membershipExpires: null,
+          assignedTrainer: "",
+        },
+      ]);
       setStatusMsg({ type: "error", text: err.message });
     } finally {
       setLoading(false);
@@ -79,21 +89,22 @@ export default function UserManager() {
       assignedTrainer: "",
     });
     setEditUser(null);
-    setStatusMsg(null);
+    // leave statusMsg visible
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((p) => ({ ...p, [name]: value }));
-    setStatusMsg(null);
   };
 
   const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setStatusMsg(null);
     try {
+      let res, json;
       if (editUser) {
-        const res = await fetch(
+        res = await fetch(
           `/api/admin/update-user?id=${encodeURIComponent(editUser.id)}`,
           {
             method: "PUT",
@@ -101,18 +112,24 @@ export default function UserManager() {
             body: JSON.stringify(formData),
           }
         );
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.message || "Update failed");
-        setStatusMsg({ type: "success", text: json.message || "User updated" });
+        json = await safeJson(res);
+        if (!res.ok) throw new Error(json?.message || "Update failed");
+        setStatusMsg({
+          type: "success",
+          text: json?.message || "User updated",
+        });
       } else {
-        const res = await fetch("/api/admin/create-user", {
+        res = await fetch("/api/admin/create-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.message || "Create failed");
-        setStatusMsg({ type: "success", text: json.message || "User created" });
+        json = await safeJson(res);
+        if (!res.ok) throw new Error(json?.message || "Create failed");
+        setStatusMsg({
+          type: "success",
+          text: json?.message || "User created",
+        });
       }
       resetForm();
       fetchUsers();
@@ -135,7 +152,9 @@ export default function UserManager() {
         : "",
       assignedTrainer: user.assignedTrainer || "",
     });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const confirmAction = (id, action) => {
@@ -149,34 +168,39 @@ export default function UserManager() {
   };
 
   const performAction = async () => {
-    const { id, action } = confirm;
-    setConfirm({ ...confirm, open: false });
+    if (!confirm.id || !confirm.action) return;
     setSubmitting(true);
+    setStatusMsg(null);
     try {
-      if (action === "delete") {
-        const res = await fetch(
-          `/api/admin/delete-user?id=${encodeURIComponent(id)}`,
-          { method: "DELETE" }
-        );
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.message || "Delete failed");
-        setStatusMsg({ type: "success", text: json.message || "User deleted" });
-      } else {
-        const res = await fetch(`/api/admin/action-user`, {
+      let res, json;
+      if (confirm.action === "delete") {
+        res = await fetch(`/api/admin/delete-user?id=${confirm.id}`, {
+          method: "DELETE",
+        });
+      } else if (confirm.action === "suspend") {
+        res = await fetch(`/api/admin/suspend-user`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, action }),
+          body: JSON.stringify({ id: confirm.id }),
         });
-        const json = await res.json();
-        if (!res.ok) throw new Error(json.message || "Action failed");
-        setStatusMsg({
-          type: "success",
-          text: json.message || "Action completed",
+      } else if (confirm.action === "reactivate") {
+        res = await fetch(`/api/admin/reactivate-user`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: confirm.id }),
         });
       }
+      json = await safeJson(res);
+      if (!res.ok) throw new Error(json?.message || "Action failed");
+      setStatusMsg({
+        type: "success",
+        text: json?.message || "Action complete",
+      });
+      setConfirm({ open: false, id: null, action: null, label: "" });
       fetchUsers();
     } catch (err) {
       setStatusMsg({ type: "error", text: err.message });
+      setConfirm({ open: false, id: null, action: null, label: "" });
     } finally {
       setSubmitting(false);
     }
@@ -184,214 +208,142 @@ export default function UserManager() {
 
   return (
     <div className="space-y-6">
-      {/* Form Card */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:scale-[1.01]">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-            {editUser ? "Edit Member" : "Add New Member"}
-          </h2>
-          <div className="text-sm text-gray-500 dark:text-gray-300">
-            {loading ? "Loading..." : `${users.length} members`}
-          </div>
-        </div>
+      <h2 className="text-2xl font-bold">User Manager</h2>
 
-        <form
-          onSubmit={handleCreateOrUpdate}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      {/* Form */}
+      <form onSubmit={handleCreateOrUpdate} className="space-y-2">
+        <input
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          placeholder="Username"
+          className="border px-2 py-1 rounded w-full"
+        />
+        <input
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="Email"
+          className="border px-2 py-1 rounded w-full"
+        />
+        <input
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="Phone"
+          className="border px-2 py-1 rounded w-full"
+        />
+        <select
+          name="membershipType"
+          value={formData.membershipType}
+          onChange={handleChange}
+          className="border px-2 py-1 rounded w-full"
         >
-          <input
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Full name"
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md w-full"
-            required
-          />
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            type="email"
-            placeholder="Email"
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md w-full"
-          />
-          <input
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Phone"
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md w-full"
-          />
-          <select
-            name="membershipType"
-            value={formData.membershipType}
-            onChange={handleChange}
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md w-full"
+          <option>Basic</option>
+          <option>Premium</option>
+          <option>VIP</option>
+        </select>
+        <input
+          type="date"
+          name="membershipExpires"
+          value={formData.membershipExpires}
+          onChange={handleChange}
+          className="border px-2 py-1 rounded w-full"
+        />
+        <input
+          name="assignedTrainer"
+          value={formData.assignedTrainer}
+          onChange={handleChange}
+          placeholder="Assigned Trainer"
+          className="border px-2 py-1 rounded w-full"
+        />
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
           >
-            <option>Basic</option>
-            <option>Premium</option>
-            <option>Elite</option>
-          </select>
-
-          <input
-            name="membershipExpires"
-            type="date"
-            value={formData.membershipExpires}
-            onChange={handleChange}
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md w-full"
-          />
-          <input
-            name="assignedTrainer"
-            value={formData.assignedTrainer}
-            onChange={handleChange}
-            placeholder="Assigned trainer"
-            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md w-full"
-          />
-
-          <div className="md:col-span-2 flex gap-3 items-center">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="bg-prestigeTeal text-white px-4 py-2 rounded-md hover:opacity-90 transition disabled:opacity-50"
-            >
-              {submitting
-                ? editUser
-                  ? "Updating..."
-                  : "Creating..."
-                : editUser
-                ? "Update Member"
-                : "Create Member"}
-            </button>
+            {submitting
+              ? "Saving..."
+              : editUser
+              ? "Update User"
+              : "Create User"}
+          </button>
+          {editUser && (
             <button
               type="button"
               onClick={resetForm}
-              className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-50"
+              className="px-4 py-2 rounded border"
             >
-              Reset
+              Cancel
             </button>
-            {editUser && (
-              <button
-                type="button"
-                onClick={() => confirmAction(editUser.id, "delete")}
-                className="ml-auto text-sm text-red-600 hover:underline"
-              >
-                Delete Member
-              </button>
-            )}
-          </div>
-        </form>
+          )}
+        </div>
+      </form>
 
-        {statusMsg && (
+      {statusMsg && (
+        <p
+          className={`text-sm ${
+            statusMsg.type === "error" ? "text-red-600" : "text-green-600"
+          }`}
+        >
+          {statusMsg.text}
+        </p>
+      )}
+
+      {/* User list */}
+      <div className="space-y-2">
+        {loading && <p>Loading users…</p>}
+        {!loading && users.length === 0 && <p>No users found.</p>}
+        {users.map((user) => (
           <div
-            className={`mt-4 px-4 py-2 rounded-md text-sm ${
-              statusMsg.type === "success"
-                ? "bg-green-50 text-green-800"
-                : "bg-red-50 text-red-800"
-            }`}
+            key={user.id}
+            className="p-3 border rounded flex justify-between items-center"
           >
-            {statusMsg.text}
-          </div>
-        )}
-      </div>
-
-      {/* Members List */}
-      <div className="grid gap-4">
-        {loading ? (
-          <div className="text-gray-500">Loading members...</div>
-        ) : users.length === 0 ? (
-          <div className="text-gray-500">No members found.</div>
-        ) : (
-          users.map((user) => {
-            const isExpired =
-              user.membershipExpires &&
-              new Date(user.membershipExpires) < new Date();
-            return (
-              <div
-                key={user.id}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
+            <div>
+              <p className="font-semibold">{user.username}</p>
+              <p className="text-xs text-gray-500">
+                {user.email || "No email"}
+              </p>
+              <p className="text-xs text-gray-500">
+                {user.membershipType} —{" "}
+                {user.membershipExpires
+                  ? new Date(user.membershipExpires).toLocaleDateString()
+                  : "No expiry"}
+              </p>
+              <p className="text-xs text-gray-500">Status: {user.status}</p>
+            </div>
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={() => openEdit(user)}
+                className="text-sm bg-blue-50 text-blue-700 px-3 py-1 rounded-md hover:bg-blue-100 transition"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center font-semibold text-gray-700 dark:text-gray-100">
-                    {user.username
-                      .split(" ")
-                      .map((s) => s[0])
-                      .slice(0, 2)
-                      .join("")}
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                          {user.username}
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-300">
-                          {user.email || user.phone || "No contact"}
-                        </p>
-                      </div>
-
-                      <div className="text-right">
-                        <div className="text-sm">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              user.status === "suspended"
-                                ? "bg-yellow-50 text-yellow-800"
-                                : isExpired
-                                ? "bg-red-50 text-red-800"
-                                : "bg-green-50 text-green-800"
-                            }`}
-                          >
-                            {user.status === "suspended"
-                              ? "Suspended"
-                              : isExpired
-                              ? "Expired"
-                              : "Active"}
-                          </span>
-                        </div>
-                        <div className="text-xs text-gray-400 mt-2">
-                          {user.membershipType} •{" "}
-                          {user.assignedTrainer || "No trainer"}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 flex items-center gap-3">
-                      <button
-                        onClick={() => openEdit(user)}
-                        className="text-sm bg-blue-50 text-blue-700 px-3 py-1 rounded-md hover:bg-blue-100 transition"
-                      >
-                        Edit
-                      </button>
-
-                      {user.status === "suspended" ? (
-                        <button
-                          onClick={() => confirmAction(user.id, "reactivate")}
-                          className="text-sm bg-green-50 text-green-700 px-3 py-1 rounded-md hover:bg-green-100 transition"
-                        >
-                          Reactivate
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => confirmAction(user.id, "suspend")}
-                          className="text-sm bg-yellow-50 text-yellow-800 px-3 py-1 rounded-md hover:bg-yellow-100 transition"
-                        >
-                          Suspend
-                        </button>
-                      )}
-
-                      <button
-                        onClick={() => confirmAction(user.id, "delete")}
-                        className="text-sm text-red-600 hover:underline ml-auto"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
+                Edit
+              </button>
+              {user.status === "suspended" ? (
+                <button
+                  onClick={() => confirmAction(user.id, "reactivate")}
+                  className="text-sm bg-green-50 text-green-700 px-3 py-1 rounded-md hover:bg-green-100 transition"
+                >
+                  Reactivate
+                </button>
+              ) : (
+                <button
+                  onClick={() => confirmAction(user.id, "suspend")}
+                  className="text-sm bg-yellow-50 text-yellow-800 px-3 py-1 rounded-md hover:bg-yellow-100 transition"
+                >
+                  Suspend
+                </button>
+              )}
+              <button
+                onClick={() => confirmAction(user.id, "delete")}
+                className="text-sm text-red-600 hover:underline ml-auto"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Confirm Modal */}
@@ -453,4 +405,13 @@ export default function UserManager() {
       `}</style>
     </div>
   );
+}
+
+// Safe JSON parse helper
+async function safeJson(res) {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
