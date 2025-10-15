@@ -396,7 +396,7 @@ export default function Notifications() {
       )}
 
       {tab === "compose" && (
-        <section className="bg-white p-4 rounded shadow space-y-3">
+        <section className="bg-blue-400 p-4 rounded shadow space-y-3">
           <h2 className="font-semibold">Compose Notification</h2>
           <form onSubmit={handleSendNotification} className="space-y-2">
             <input
@@ -481,7 +481,7 @@ export default function Notifications() {
       )}
 
       {tab === "payments" && (
-        <section className="bg-white p-4 rounded shadow space-y-3">
+        <section className="bg-blue-400 p-4 rounded shadow space-y-3">
           <h2 className="font-semibold">Send Payment Notification</h2>
           <form onSubmit={handleSendPayment} className="space-y-2">
             <input
@@ -547,7 +547,7 @@ export default function Notifications() {
       )}
 
       {tab === "inbox" && (
-        <section className="bg-white p-4 rounded shadow space-y-3">
+        <section className="bg-blue-400 p-4 rounded shadow space-y-3">
           <div className="flex justify-between items-center">
             <h2 className="font-semibold">User Messages & Complaints</h2>
             <div className="flex gap-2">
@@ -643,7 +643,7 @@ export default function Notifications() {
       )}
 
       {tab === "sent" && (
-        <section className="bg-white p-4 rounded shadow space-y-3">
+        <section className="bg-blue-400 p-4 rounded shadow space-y-3">
           <div className="flex justify-between items-center">
             <h2 className="font-semibold">Sent Notifications</h2>
             <div className="flex gap-2">
@@ -710,7 +710,7 @@ export default function Notifications() {
               setConfirm({ open: false, id: null, action: null, label: "" })
             }
           />
-          <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md">
+          <div className="relative bg-blue-400 dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold mb-2">{confirm.label}</h3>
             <p className="text-sm text-gray-600 mb-4">
               Are you sure you want to {confirm.action} this item?

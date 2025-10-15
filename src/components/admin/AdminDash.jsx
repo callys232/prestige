@@ -5,7 +5,7 @@ import UserForm from "./userForm";
 import WorkoutForm from "./workoutManager";
 import ActivityForm from "./activityManager";
 import Analytics from "./Analytics";
-import Notifications from "./notifications";
+import Notifications from "./Notifications";
 
 const AdminDashboard = () => {
   const [selectedSection, setSelectedSection] = useState("User Management");

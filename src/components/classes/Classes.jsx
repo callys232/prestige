@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import ClassCard from "./classCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -8,8 +8,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-// Category data with theme colors and 3 classes each
 const classCategories = [
+  /* keep your category data exactly as in your file */
   {
     category: "Dance Fitness",
     theme: {
@@ -185,9 +185,21 @@ const classCategories = [
 
 const Classes = () => {
   const [selectedTrainer, setSelectedTrainer] = useState({});
+  const [isInteracting, setIsInteracting] = useState(false);
+  const swiperRef = useRef(null);
 
   const handleTrainerSelect = (classId, trainer) => {
     setSelectedTrainer((prev) => ({ ...prev, [classId]: trainer }));
+  };
+
+  const onInteractionStart = () => {
+    setIsInteracting(true);
+    if (swiperRef.current?.autoplay?.stop) swiperRef.current.autoplay.stop();
+  };
+
+  const onInteractionEnd = () => {
+    setIsInteracting(false);
+    if (swiperRef.current?.autoplay?.start) swiperRef.current.autoplay.start();
   };
 
   return (
@@ -215,7 +227,7 @@ const Classes = () => {
               slidesPerView={1}
               navigation
               pagination={{ clickable: true }}
-              autoplay={{ delay: 4000 }}
+              autoplay={{ delay: 4000, disableOnInteraction: false }}
               loop={true}
               breakpoints={{
                 640: { slidesPerView: 1 },
@@ -223,10 +235,19 @@ const Classes = () => {
                 1024: { slidesPerView: 3 },
               }}
               className="pb-12"
+              onSwiper={(s) => (swiperRef.current = s)}
+              allowTouchMove={!isInteracting}
+              aria-label={`${category} classes carousel`}
             >
               {classes.map((cls) => (
                 <SwiperSlide key={cls.id}>
                   <div
+                    onMouseEnter={onInteractionStart}
+                    onMouseLeave={onInteractionEnd}
+                    onFocus={onInteractionStart}
+                    onBlur={onInteractionEnd}
+                    onTouchStart={onInteractionStart}
+                    onTouchEnd={onInteractionEnd}
                     className={`
                       m-4 
                       rounded-xl border border-transparent 
@@ -239,8 +260,12 @@ const Classes = () => {
                     <ClassCard
                       {...cls}
                       theme={theme}
-                      selectedTrainer={selectedTrainer}
-                      onTrainerSelect={handleTrainerSelect}
+                      selectedTrainer={selectedTrainer[cls.id]}
+                      onTrainerSelect={(trainer) =>
+                        handleTrainerSelect(cls.id, trainer)
+                      }
+                      onInteractionStart={onInteractionStart}
+                      onInteractionEnd={onInteractionEnd}
                     />
                   </div>
                 </SwiperSlide>
