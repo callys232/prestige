@@ -148,3 +148,32 @@ export const sendFailureMail = async ({
     throw error;
   }
 };
+
+
+export async function sendNotificationEmail(
+  to: string,
+  title: string,
+  message: string
+): Promise<void> {
+  const mailOptions = {
+    from: `"Prestige" <${process.env.NOTIFICATION_EMAIL_USER}>`,
+    to,
+    subject: title,
+    html: `
+      <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: auto; padding: 1.5rem; background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+        <h2 style="color: #1e40af; text-align: center;">📢 ${title}</h2>
+        <p style="font-size: 15px; color: #374151; line-height: 1.6; margin-top: 1rem;">
+          ${message}
+        </p>
+        <div style="margin-top: 2rem; border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+          <p style="font-size: 13px; color: #6b7280; text-align: center;">
+            This message was sent by Prestige Fitness Center.<br/>
+            Please do not reply to this automated email.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+  console.log("Sending notification email to:", to);
+  await notificationTransporter.sendMail(mailOptions);
+}

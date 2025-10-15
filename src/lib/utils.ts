@@ -144,3 +144,9 @@ export function getClientIp(req: NextRequest) {
   return "127.0.0.1";
 }
 
+// Utility to calculate delay in ms from a future ISO time
+export function getDelayUntil(timeString: string) {
+  const now = Date.now();
+  const target = new Date(timeString).getTime();
+  return Math.max(target - now, 0);
+}
