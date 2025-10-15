@@ -2,9 +2,10 @@
 
 import Hero from "../components/Hero";
 import Programs from "../components/Programs";
-import Footer from "../components/Footer";
+import FormIntake from "../components/FormIntake";
 import NavBar from "../components/Navbar";
 import Cta from "../components/Cta";
+import Footer from "../components/Footer";
 // import ProgramButtons from '../../../../components/ProgramButtons';
 
 export default function HomePage() {
@@ -14,6 +15,7 @@ export default function HomePage() {
       <Hero />
       <Programs />
       <Cta />
+      <FormIntake />
       <Footer />
     </main>
   );

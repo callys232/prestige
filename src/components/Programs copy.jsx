@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ProgramCard from "./ProgramCard";
-import { motion } from "framer-motion";
 
 // Individual dropdown component
 const ProgramDropdown = ({ label, links }) => {
@@ -107,54 +106,51 @@ const Programs = () => {
 
             {/* Program Buttons */}
             <div className="flex flex-wrap gap-4 mt-4">
+              {/* Cardio Blast */}
               <ProgramCard
                 label="Cardio Blast"
                 description="Sweat. Burn. Repeat."
-                brief="Cardio Blast is a high-intensity interval training program designed to maximize calorie burn, boost cardiovascular endurance, and improve overall fitness. Perfect for adults seeking fat loss, stamina building, and a fun, results-driven workout."
+                brief="Cardio Blast is a high-energy interval training program designed to torch calories and build endurance. Perfect for anyone looking to push their limits in a fun, motivating environment."
                 links={[
-                  { label: "Classes", href: "/classes" },
-                  { label: "Trainers", href: "/classes" },
+                  { label: "Overview", href: "/programs/adults/overview" },
+                  { label: "Schedule", href: "/programs/adults/schedule" },
+                  { label: "Pricing", href: "/programs/adults/pricing" },
                 ]}
               />
 
+              {/* Kids Fitness */}
               <ProgramCard
                 label="Kids Fitness"
                 description="Fit, Fun & Focused"
-                brief="Our Kids Fitness program promotes healthy growth, coordination, and confidence through safe, age-appropriate exercises. Designed for children to stay active, build strength, and develop lifelong healthy habits in a fun and supportive environment."
+                brief="Our Kids Fitness program combines play, movement, and discipline to help children stay active while developing coordination and confidence. Safe, fun, and led by certified youth trainers."
                 links={[
-                  { label: "Classes", href: "/classes" },
-                  { label: "Trainers", href: "/classes" },
+                  { label: "Classes", href: "/programs/kids/classes" },
+                  { label: "Trainers", href: "/programs/kids/trainers" },
                 ]}
               />
 
+              {/* Dance Fitness */}
               <ProgramCard
                 label="Dance Fitness Class"
                 description="Turn your workout into a party."
-                brief="Dance Fitness combines cardio and rhythm with styles like Zumba, hip-hop, and salsa to create a dynamic full-body workout. Ideal for adults who want to burn calories, improve coordination, and enjoy an energetic, music-driven fitness experience."
+                brief="Dance Fitness blends cardio with rhythm, offering a vibrant mix of Zumba, hip-hop, and salsa. It’s the perfect way to burn calories, boost mood, and connect with others through music."
                 links={[
-                  { label: "Classes", href: "/classes" },
-                  { label: "Trainers", href: "/classes" },
+                  { label: "Schedule", href: "/programs/dance/schedule" },
+                  { label: "Styles", href: "/programs/dance/styles" },
                 ]}
               />
             </div>
           </div>
-
           {/* Image */}
-          <div className="flex-1 overflow-hidden rounded shadow-md">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="w-full h-full"
-            >
-              <Image
-                src="/heroimg.png"
-                alt="Adults Program"
-                width={700}
-                height={500}
-                className="w-full h-auto object-cover rounded"
-                priority
-              />
-            </motion.div>
+          <div className="flex-1">
+            <Image
+              src="/images/adult-program.jpg"
+              alt="Adults Program"
+              width={600}
+              height={400}
+              className="w-full h-auto rounded shadow-md object-cover"
+              priority
+            />
           </div>
         </div>
       </div>

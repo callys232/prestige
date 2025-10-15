@@ -1,55 +1,207 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
+import React, { useState, useRef } from "react";
+import ClassCard from "./classCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
-const classes = [
+const classCategories = [
+  /* keep your category data exactly as in your file */
   {
-    name: "Unbreakable Strength",
-    image: "/class-strength.jpg",
-    description:
-      "Master powerlifting and resistance training. Build raw strength and push past your limits.",
-    level: "Intermediate – Advanced",
+    category: "Dance Fitness",
+    theme: {
+      text: "text-pink-600 dark:text-pink-300",
+      base: "border-pink-300 bg-pink-500/5",
+      hover:
+        "hover:border-pink-500 hover:shadow-pink-500/40 hover:bg-pink-500/10",
+      active: "active:border-pink-600 active:bg-pink-500/20",
+    },
+    classes: [
+      {
+        id: 1,
+        name: "Dance Fitness Class",
+        image: "/class-dance.jpg",
+        description:
+          "High-energy dance routines to boost cardio endurance, rhythm, and toning.",
+        level: "All Levels",
+        trainers: ["Coach Aisha", "Coach David"],
+        icon: "💃",
+        workout: [
+          "Warm-Up",
+          "Latin Groove",
+          "Hip-Hop Cardio",
+          "Afrobeat Flow",
+          "Strength & Tone",
+          "Cool-Down",
+        ],
+      },
+      {
+        id: 2,
+        name: "Zumba Fusion",
+        image: "/class-zumba.jpg",
+        description: "Latin-inspired cardio dance party with fun choreography.",
+        level: "Beginner – Intermediate",
+        trainers: ["Coach Grace"],
+        icon: "🎶",
+        workout: [
+          "Warm-Up",
+          "Zumba Block 1",
+          "Zumba Block 2",
+          "Strength Moves",
+          "Cool-Down",
+        ],
+      },
+      {
+        id: 3,
+        name: "Afro Dance Burn",
+        image: "/class-afro.jpg",
+        description: "Afrobeat-inspired dance cardio to sweat and groove.",
+        level: "All Levels",
+        trainers: ["Coach Emeka"],
+        icon: "🔥",
+        workout: [
+          "Warm-Up",
+          "Afrobeat Flow",
+          "Dance Drills",
+          "Strength Finish",
+          "Cool-Down",
+        ],
+      },
+    ],
   },
   {
-    name: "Limitless HIIT",
-    image: "/class-hiit.jpg",
-    description:
-      "High-intensity intervals to burn fat, boost endurance, and leave you feeling unstoppable.",
-    level: "All Levels",
+    category: "Kids Fitness",
+    theme: {
+      text: "text-yellow-600 dark:text-yellow-300",
+      base: "border-yellow-300 bg-yellow-500/5",
+      hover:
+        "hover:border-yellow-500 hover:shadow-yellow-500/40 hover:bg-yellow-500/10",
+      active: "active:border-yellow-600 active:bg-yellow-500/20",
+    },
+    classes: [
+      {
+        id: 4,
+        name: "Kids Fitness",
+        image: "/class-kids.jpg",
+        description: "Fun, safe, and energetic workouts for kids.",
+        level: "Ages 5–12",
+        trainers: ["Coach Grace"],
+        icon: "🧒",
+        workout: [
+          "Warm-Up Game",
+          "Circuit Stations",
+          "Fun Challenge",
+          "Cool-Down",
+        ],
+      },
+      {
+        id: 5,
+        name: "Junior Bootcamp",
+        image: "/class-junior.jpg",
+        description:
+          "Obstacle courses and games to build strength and agility.",
+        level: "Ages 8–12",
+        trainers: ["Coach David"],
+        icon: "🏃",
+        workout: ["Warm-Up", "Agility Drills", "Obstacle Course", "Cool-Down"],
+      },
+      {
+        id: 6,
+        name: "Mini Movers",
+        image: "/class-mini.jpg",
+        description: "Creative movement and play for younger kids.",
+        level: "Ages 4–7",
+        trainers: ["Coach Aisha"],
+        icon: "🎈",
+        workout: ["Warm-Up", "Dance Play", "Balance Games", "Stretch"],
+      },
+    ],
   },
   {
-    name: "Restore & Rise",
-    image: "/class-recovery.jpg",
-    description:
-      "Mobility and recovery flows to realign your body and mind. Stretch, breathe, and rebuild.",
-    level: "Beginner – Intermediate",
-  },
-  {
-    name: "KidFit PlayZone",
-    image: "/class-kids.jpg",
-    description:
-      "Fun, safe, and energetic workouts for kids. Builds coordination, confidence, and healthy habits.",
-    level: "Ages 5–12",
-  },
-  {
-    name: "Cardio Core Blast",
-    image: "/class-cardio.jpg",
-    description:
-      "Heart-pumping cardio fused with core conditioning. Burn calories and sculpt your midsection.",
-    level: "All Levels",
-  },
-  {
-    name: "Adult Functional Training",
-    image: "/class-adult.jpg",
-    description:
-      "Train for real life. Improve balance, strength, and mobility with functional movement patterns.",
-    level: "Adults 40+",
+    category: "Cardio Blast",
+    theme: {
+      text: "text-red-600 dark:text-red-300",
+      base: "border-red-300 bg-red-500/5",
+      hover: "hover:border-red-500 hover:shadow-red-500/40 hover:bg-red-500/10",
+      active: "active:border-red-600 active:bg-red-500/20",
+    },
+    classes: [
+      {
+        id: 7,
+        name: "Cardio Blast",
+        image: "/class-cardio.jpg",
+        description: "Heart-pumping cardio fused with core conditioning.",
+        level: "All Levels",
+        trainers: ["Coach Emeka", "Coach David"],
+        icon: "❤️",
+        workout: ["Warm-Up", "HIIT Rounds", "Core Finisher", "Cool-Down"],
+      },
+      {
+        id: 8,
+        name: "HIIT Express",
+        image: "/class-hiit.jpg",
+        description: "Quick, intense HIIT session for max calorie burn.",
+        level: "Intermediate",
+        trainers: ["Coach Aisha"],
+        icon: "⚡",
+        workout: ["Warm-Up", "HIIT Circuits", "Core Burn", "Cool-Down"],
+      },
+      {
+        id: 9,
+        name: "Endurance Builder",
+        image: "/class-endurance.jpg",
+        description: "Longer cardio intervals to build stamina.",
+        level: "Intermediate – Advanced",
+        trainers: ["Coach Grace"],
+        icon: "🔥",
+        workout: ["Warm-Up", "Interval Runs", "Strength Finish", "Cool-Down"],
+      },
+      {
+        id: 10,
+        name: "Muscle Maranthon",
+        image: "/class-endurance.jpg",
+        description: "Longer cardio intervals to build stamina.",
+        level: "Intermediate – Advanced",
+        trainers: ["Coach Grace"],
+        icon: "🔥",
+        workout: ["Warm-Up", "Interval Runs", "Strength Finish", "Cool-Down"],
+      },
+      {
+        id: 11,
+        name: "press to Burn",
+        image: "/class-endurance.jpg",
+        description: "Longer cardio intervals to build stamina.",
+        level: "Intermediate – Advanced",
+        trainers: ["Coach Grace"],
+        icon: "🔥",
+        workout: ["Warm-Up", "Interval Runs", "Strength Finish", "Cool-Down"],
+      },
+    ],
   },
 ];
 
 const Classes = () => {
+  const [selectedTrainer, setSelectedTrainer] = useState({});
+  const [isInteracting, setIsInteracting] = useState(false);
+  const swiperRef = useRef(null);
+
+  const handleTrainerSelect = (classId, trainer) => {
+    setSelectedTrainer((prev) => ({ ...prev, [classId]: trainer }));
+  };
+
+  const onInteractionStart = () => {
+    setIsInteracting(true);
+    if (swiperRef.current?.autoplay?.stop) swiperRef.current.autoplay.stop();
+  };
+
+  const onInteractionEnd = () => {
+    setIsInteracting(false);
+    if (swiperRef.current?.autoplay?.start) swiperRef.current.autoplay.start();
+  };
+
   return (
     <section className="relative py-16 px-4 text-[#0B56A3] dark:text-white overflow-hidden">
       {/* Frosted Blue Background */}
@@ -57,34 +209,70 @@ const Classes = () => {
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-10">Our Signature Classes</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {classes.map(({ name, image, description, level }, i) => (
-            <div
-              key={i}
-              className="bg-white/30 dark:bg-blue-950/20 backdrop-blur-md border border-white/10 ring-1 ring-white/10 rounded-xl shadow-md p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:scale-105 hover:shadow-xl"
+        <h2 className="text-3xl font-bold text-center mb-10">
+          Pick a Class that works for you
+        </h2>
+
+        {classCategories.map(({ category, classes, theme }) => (
+          <div key={category} className="mb-16">
+            <h3
+              className={`text-2xl font-semibold text-center mb-6 ${theme.text}`}
             >
-              <div className="w-full h-40 mb-4 overflow-hidden rounded-lg">
-                <Image
-                  src={image}
-                  alt={name}
-                  width={400}
-                  height={160}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{name}</h3>
-              <p className="text-sm text-white/80 dark:text-white/70 mb-3">{description}</p>
-              <p className="text-xs italic text-blue-200 dark:text-blue-300 mb-4">{level}</p>
-              <Link
-                href="/contact"
-                className="inline-block mt-2 px-4 py-2 bg-[#0B56A3] text-white rounded hover:bg-blue-800 transition"
-              >
-                Join Now
-              </Link>
-            </div>
-          ))}
-        </div>
+              {category}
+            </h3>
+
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay]}
+              spaceBetween={30}
+              slidesPerView={1}
+              navigation
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 4000, disableOnInteraction: false }}
+              loop={true}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              className="pb-12"
+              onSwiper={(s) => (swiperRef.current = s)}
+              allowTouchMove={!isInteracting}
+              aria-label={`${category} classes carousel`}
+            >
+              {classes.map((cls) => (
+                <SwiperSlide key={cls.id}>
+                  <div
+                    onMouseEnter={onInteractionStart}
+                    onMouseLeave={onInteractionEnd}
+                    onFocus={onInteractionStart}
+                    onBlur={onInteractionEnd}
+                    onTouchStart={onInteractionStart}
+                    onTouchEnd={onInteractionEnd}
+                    className={`
+                      m-4 
+                      rounded-xl border border-transparent 
+                      transition-all duration-300 
+                      ${theme.base} 
+                      ${theme.hover} 
+                      ${theme.active}
+                    `}
+                  >
+                    <ClassCard
+                      {...cls}
+                      theme={theme}
+                      selectedTrainer={selectedTrainer[cls.id]}
+                      onTrainerSelect={(trainer) =>
+                        handleTrainerSelect(cls.id, trainer)
+                      }
+                      onInteractionStart={onInteractionStart}
+                      onInteractionEnd={onInteractionEnd}
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        ))}
       </div>
     </section>
   );
