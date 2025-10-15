@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
         if (!role) return badRequest("Missing 'role' query parameter");
 
-        const users = await User.find({ role }).select("-password"); // omit sensitive fields
+        const users = await User.find({ role }).select("-password");
         return ok(users);
     } catch (error) {
         console.error("❌ Error fetching users by role:", error);

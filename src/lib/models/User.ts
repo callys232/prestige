@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: false },
   gender: { type: String, enum: ["male", "female", "other"] },
   medicalCondition: { type: String },
-  class: {
+  userClass: {
     type: String,
     enum: [
       "dance fitness",
