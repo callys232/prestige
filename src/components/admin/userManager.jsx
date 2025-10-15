@@ -78,6 +78,24 @@ export default function UserManager() {
       setLoading(false);
     }
   };
+  const goals = [
+    "Build Muscle",
+    "Lose Weight",
+    "Improve Endurance",
+    "Increase Flexibility",
+    "General Fitness",
+  ];
+  const classes = [
+    "Dance Fitness",
+    "Zumba Fusion",
+    "Kids Fitness",
+    "Mini Movers",
+    "Muscle Marathon",
+    "Cardio Blast",
+    "Press-to-Burn",
+    "HiiT Express",
+    "Endurance Builder",
+  ];
 
   const resetForm = () => {
     setFormData({
@@ -257,6 +275,7 @@ export default function UserManager() {
           placeholder="Assigned Trainer"
           className="border px-2 py-1 rounded w-full"
         />
+
         <div className="flex gap-2">
           <button
             type="submit"

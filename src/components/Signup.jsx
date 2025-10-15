@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 
 export default function SignupForm() {
   const searchParams = useSearchParams();
-  const prefillClass = searchParams.get("className");
-  const prefillTrainer = searchParams.get("trainer");
+  const prefillClass = searchParams.get("className") || "";
+  const prefillTrainer = searchParams.get("trainer") || "";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -16,11 +16,13 @@ export default function SignupForm() {
     password: "",
     gender: "",
     goal: "",
-    className: prefillClass || "",
+    className: "",
+    health: "",
     trainer: prefillTrainer || "",
   });
 
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +42,17 @@ export default function SignupForm() {
     "Increase Flexibility",
     "General Fitness",
   ];
+  const classes = [
+    "Dance Fitness",
+    "Zumba Fusion",
+    "Kids Fitness",
+    "Mini Movers",
+    "Muscle Marathon",
+    "Cardio Blast",
+    "Press-to-Burn",
+    "HiiT Express",
+    "Endurance Builder",
+  ];
 
   const validate = () => {
     const newErrors = {};
@@ -54,11 +67,15 @@ export default function SignupForm() {
   };
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
+    setServerError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setServerError("");
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -66,9 +83,30 @@ export default function SignupForm() {
     }
     setErrors({});
     setLoading(true);
+
     try {
-      console.log("Signup data:", formData);
-      // TODO: send to backend
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const json = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const message = json?.message || "Signup failed";
+        // If backend returns field errors object, merge them
+        if (json?.errors && typeof json.errors === "object") {
+          setErrors((prev) => ({ ...prev, ...json.errors }));
+        } else {
+          setServerError(message);
+        }
+        return;
+      }
+
+      // success -> redirect to login with a query flag
+      window.location.href = "/login?registered=1";
+    } catch (err) {
+      setServerError(err?.message || "Network error");
     } finally {
       setLoading(false);
     }
@@ -87,6 +125,9 @@ export default function SignupForm() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Server error */}
+          {serverError && <p className="text-sm text-red-600">{serverError}</p>}
+
           {/* Name */}
           <div>
             <label className="block text-sm font-medium mb-1">Full Name</label>
@@ -150,10 +191,7 @@ export default function SignupForm() {
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md 
-                         bg-white text-gray-800 
-                         dark:bg-gray-700 dark:text-white 
-                         focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-- Select Gender --</option>
               <option value="Female">Female</option>
@@ -175,10 +213,7 @@ export default function SignupForm() {
               name="goal"
               value={formData.goal}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md 
-                         bg-white text-gray-800 
-                         dark:bg-gray-700 dark:text-white 
-                         focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-- Select Goal --</option>
               {goals.map((g) => (
@@ -195,12 +230,32 @@ export default function SignupForm() {
           {/* Class */}
           <div>
             <label className="block text-sm font-medium mb-1">Class</label>
-            <input
-              type="text"
+            <select
               name="className"
               value={formData.className}
               onChange={handleChange}
-              readOnly={!!prefillClass}
+              className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">-- Select Class --</option>
+              {classes.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Health Recommendations */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Health Recommendations
+            </label>
+            <textarea
+              name="health"
+              value={formData.health}
+              onChange={handleChange}
+              placeholder="Any health notes or recommendations"
+              rows={3}
               className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -221,10 +276,7 @@ export default function SignupForm() {
                 name="trainer"
                 value={formData.trainer}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md 
-                           bg-white text-gray-800 
-                           dark:bg-gray-700 dark:text-white 
-                           focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">-- Choose a Trainer --</option>
                 {trainers.map((t) => (
@@ -238,7 +290,26 @@ export default function SignupForm() {
               <p className="text-xs text-red-500">{errors.trainer}</p>
             )}
           </div>
-
+          {/* Gender */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Membership Type
+            </label>
+            <select
+              name="member"
+              value={formData.member}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">-- Select Membership</option>
+              <option value="Basic">Basic</option>
+              <option value="Premuim">Premuim</option>
+              <option value="Elite">Elite</option>
+            </select>
+            {errors.Membership && (
+              <p className="text-xs text-red-500">{errors.Membership}</p>
+            )}
+          </div>
           {/* Submit */}
           <button
             type="submit"

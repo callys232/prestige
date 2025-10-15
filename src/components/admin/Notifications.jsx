@@ -18,7 +18,7 @@ export default function Notifications() {
   // payment state
   const [paymentUsers, setPaymentUsers] = useState("");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("NGN");
   const [dueDate, setDueDate] = useState("");
   const [paymentNote, setPaymentNote] = useState("");
 
