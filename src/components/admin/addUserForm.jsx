@@ -5,13 +5,14 @@ import { motion } from "framer-motion";
 export default function UserForm({ section = "User Management", onSuccess }) {
   const [formData, setFormData] = useState({
     username: "",
+    fullName: "",
+    email: "",
     password: "",
-    membershipType: "",
-    assignedTrainer: "",
-    trainerName: "",
+    membership: "",
+    trainerId: "68bab26c86e2ecf4a6f51e9b",
     goal: "",
-    className: "",
-    health: "",
+    userClass: "",
+    medicalCondition: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -24,23 +25,25 @@ export default function UserForm({ section = "User Management", onSuccess }) {
   const firstFieldRef = useRef();
 
   const goals = [
-    "Build Muscle",
-    "Lose Weight",
-    "Improve Endurance",
-    "Increase Flexibility",
-    "General Fitness",
+    "build muscle",
+    "lose weight",
+    "improve endurance",
+    "increase flexibility",
+    "general fitness",
   ];
 
   const classes = [
-    "Dance Fitness",
-    "Zumba Fusion",
-    "Kids Fitness",
-    "Mini Movers",
-    "Muscle Marathon",
-    "Cardio Blast",
-    "Press-to-Burn",
-    "HiiT Express",
-    "Endurance Builder",
+    "dance fitness",
+    "zumba fusion",
+    "afro dance burn",
+    "kid fitness",
+    "junior bootcamp",
+    "mini movers",
+    "muscle marathon",
+    "endurance builder",
+    "hiit express",
+    "press to burn",
+    "cardio blast",
   ];
 
   // 🔹 Fetch trainers
@@ -50,7 +53,7 @@ export default function UserForm({ section = "User Management", onSuccess }) {
     const fetchTrainers = async () => {
       setLoadingTrainers(true);
       try {
-        const res = await fetch("/api/trainers");
+        const res = await fetch("/api/users?role=trainer");
         const data = await res.json();
         setTrainers(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -79,13 +82,14 @@ export default function UserForm({ section = "User Management", onSuccess }) {
   const resetForm = () => {
     setFormData({
       username: "",
+      fullName: "",
       password: "",
-      membershipType: "",
-      assignedTrainer: "",
-      trainerName: "",
+      membership: "",
+      trainerId: "",
+      // trainerName: "",
       goal: "",
-      className: "",
-      health: "",
+      userClass: "",
+      medicalCondition: "",
     });
     setPasswordStrength(null);
     setErrors({});
@@ -100,16 +104,22 @@ export default function UserForm({ section = "User Management", onSuccess }) {
     // ✅ Basic Validation
     const newErrors = {};
     if (section === "User Management") {
+      if (!formData.fullName.trim())
+        newErrors.fullName = "Full name is required";
+
       if (!formData.username.trim()) newErrors.username = "Name is required";
       if (!formData.password.trim())
         newErrors.password = "Password is required";
-      if (!formData.membershipType)
-        newErrors.membershipType = "Membership type is required";
+      if (!formData.email.trim()) newErrors.email = "Email is required";
+      else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email))
+        newErrors.email = "Invalid email address";
+      if (!formData.membership)
+        newErrors.membership = "Membership type is required";
       if (!formData.goal) newErrors.goal = "Please select a goal";
-      if (!formData.className) newErrors.className = "Please select a class";
+      if (!formData.userClass) newErrors.userClass = "Please select a class";
     } else if (section === "Trainer Management") {
-      if (!formData.trainerName.trim())
-        newErrors.trainerName = "Trainer name is required";
+      if (!formData.trainerId.trim())
+        newErrors.trainerId = "Trainer name is required";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -121,15 +131,15 @@ export default function UserForm({ section = "User Management", onSuccess }) {
     try {
       const endpoint =
         section === "Trainer Management"
-          ? "/api/admin/create-trainer"
-          : "/api/admin/create-user";
+          ? "/api/auth/signup"
+          : "/api/auth/signup";
 
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+      console.log(formData);
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Save failed");
 
@@ -163,10 +173,29 @@ export default function UserForm({ section = "User Management", onSuccess }) {
           className="space-y-4"
           aria-label="Add member form"
         >
+          {/* Full Name */}
+          <label htmlFor="fullName" className="block">
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              Full Name
+            </span>
+            <input
+              id="fullName"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="e.g., prestige gym"
+              disabled={submitting}
+              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {errors.fullName && (
+              <p className="text-xs text-red-500">{errors.fullName}</p>
+            )}
+          </label>
           {/* Username */}
           <label htmlFor="username" className="block">
             <span className="text-sm text-gray-600 dark:text-gray-300">
-              Full name
+              user name
             </span>
             <input
               id="username"
@@ -181,6 +210,26 @@ export default function UserForm({ section = "User Management", onSuccess }) {
             />
             {errors.username && (
               <p className="text-xs text-red-500">{errors.username}</p>
+            )}
+          </label>
+          {/* Email */}
+          <label htmlFor="email" className="block">
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              Email Address
+            </span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="e.g., prestigeuser@gmail"
+              disabled={submitting}
+              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {errors.email && (
+              <p className="text-xs text-red-500">{errors.email}</p>
             )}
           </label>
 
@@ -227,26 +276,26 @@ export default function UserForm({ section = "User Management", onSuccess }) {
           </label>
 
           {/* Membership Type */}
-          <label htmlFor="membershipType" className="block">
+          <label htmlFor="membership" className="block">
             <span className="text-sm text-gray-600 dark:text-gray-300">
               Membership Type
             </span>
             <select
-              id="membershipType"
-              name="membershipType"
-              value={formData.membershipType}
+              id="membership"
+              name="membership"
+              value={formData.membership}
               onChange={handleChange}
               disabled={submitting}
               className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
               required
             >
               <option value="">Select membership</option>
-              <option value="Basic">Basic</option>
-              <option value="Premium">Premium</option>
-              <option value="Elite">Elite</option>
+              <option value="basic">Basic</option>
+              <option value="premium">Premium</option>
+              <option value="elite">Elite</option>
             </select>
-            {errors.membershipType && (
-              <p className="text-xs text-red-500">{errors.membershipType}</p>
+            {errors.membership && (
+              <p className="text-xs text-red-500">{errors.membership}</p>
             )}
           </label>
 
@@ -277,8 +326,8 @@ export default function UserForm({ section = "User Management", onSuccess }) {
           <div>
             <label className="block text-sm font-medium mb-1">Class</label>
             <select
-              name="className"
-              value={formData.className}
+              name="userClass"
+              value={formData.userClass}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
@@ -290,7 +339,7 @@ export default function UserForm({ section = "User Management", onSuccess }) {
               ))}
             </select>
             {errors.className && (
-              <p className="text-xs text-red-500">{errors.className}</p>
+              <p className="text-xs text-red-500">{errors.userClass}</p>
             )}
           </div>
 
@@ -300,8 +349,8 @@ export default function UserForm({ section = "User Management", onSuccess }) {
               Health Recommendations
             </label>
             <textarea
-              name="health"
-              value={formData.health}
+              name="medicalCondition"
+              value={formData.medicalCondition}
               onChange={handleChange}
               placeholder="Any health notes or recommendations"
               rows={3}
@@ -316,9 +365,9 @@ export default function UserForm({ section = "User Management", onSuccess }) {
             </span>
             <div className="mt-1">
               <select
-                id="assignedTrainer"
-                name="assignedTrainer"
-                value={formData.assignedTrainer}
+                id="trainerId"
+                name="trainerId"
+                value={formData.trainerId}
                 onChange={handleChange}
                 disabled={loadingTrainers || submitting}
                 className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
@@ -358,7 +407,7 @@ export default function UserForm({ section = "User Management", onSuccess }) {
         </form>
       )}
 
-      {/* Trainer Management Form */}
+      {/* Trainer Management Form
       {section === "Trainer Management" && (
         <form
           onSubmit={handleSubmit}
@@ -401,7 +450,7 @@ export default function UserForm({ section = "User Management", onSuccess }) {
             </button>
           </div>
         </form>
-      )}
+      )} */}
 
       {/* Bookings & Attendance Placeholder */}
       {section === "Bookings & Attendance" && (

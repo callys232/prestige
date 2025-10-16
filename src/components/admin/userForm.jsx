@@ -24,8 +24,8 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const [uRes, tRes] = await Promise.all([
-        fetch("/api/users"),
-        fetch("/api/trainers"),
+        fetch("/api/users?role=client"),
+        fetch("/api/users?role=trainer"),
       ]);
       const [uJson, tJson] = await Promise.all([
         uRes.json().catch(() => []),
@@ -177,16 +177,16 @@ export default function AdminDashboard() {
                       {activeTab === "Users" ? (
                         <>
                           <td className="px-3 py-2">{it.username}</td>
-                          <td className="px-3 py-2">{it.membershipType}</td>
+                          <td className="px-3 py-2">{it.membership}</td>
                           <td className="px-3 py-2">{it.goal}</td>
-                          <td className="px-3 py-2">{it.className}</td>
+                          <td className="px-3 py-2">{it.userClass}</td>
                           <td className="px-3 py-2">
                             {it.assignedTrainer?.name ?? "—"}
                           </td>
                         </>
                       ) : (
                         <>
-                          <td className="px-3 py-2">{it.trainerName}</td>
+                          <td className="px-3 py-2">{it.trainerId}</td>
                           <td className="px-3 py-2">{it._id || it.id}</td>
                         </>
                       )}
