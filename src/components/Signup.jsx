@@ -7,18 +7,19 @@ import { motion } from "framer-motion";
 
 export default function SignupForm() {
   const searchParams = useSearchParams();
-  const prefillClass = searchParams.get("className") || "";
-  const prefillTrainer = searchParams.get("trainer") || "";
+  const prefilluserClass = searchParams.get("userClass") || "";
+  const prefilltrainerId = searchParams.get("trainerId") || "";
 
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     password: "",
     gender: "",
     goal: "",
-    className: "",
-    health: "",
-    trainer: prefillTrainer || "",
+    userClass: "",
+    membership: "",
+    medicalCondition: "",
+    trainerId: prefilltrainerId || "68bab26c86e2ecf4a6f51e9b",
   });
 
   const [errors, setErrors] = useState({});
@@ -29,10 +30,10 @@ export default function SignupForm() {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      className: prefillClass || prev.className,
-      trainer: prefillTrainer || prev.trainer,
+      userClass: prefilluserClass || prev.userClass,
+      trainerId: prefilltrainerId || prev.trainerId,
     }));
-  }, [prefillClass, prefillTrainer]);
+  }, [prefilluserClass, prefilltrainerId]);
 
   const trainers = ["Coach Aisha", "Coach David", "Coach Emeka", "Coach Grace"];
   const goals = [
@@ -56,13 +57,13 @@ export default function SignupForm() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.fullName.trim()) newErrors.fullName = "Name is required";
     if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email";
     if (formData.password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
     if (!formData.gender) newErrors.gender = "Please select a gender";
     if (!formData.goal) newErrors.goal = "Please select a goal";
-    if (!formData.trainer) newErrors.trainer = "Please select a trainer";
+    if (!formData.trainerId) newErrors.trainerId = "Please select a trainer";
     return newErrors;
   };
 
@@ -133,13 +134,13 @@ export default function SignupForm() {
             <label className="block text-sm font-medium mb-1">Full Name</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="fullName"
+              value={formData.fullName}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
-            {errors.name && (
-              <p className="text-xs text-red-500">{errors.name}</p>
+            {errors.fullName && (
+              <p className="text-xs text-red-500">{errors.fullName}</p>
             )}
           </div>
 
@@ -231,8 +232,8 @@ export default function SignupForm() {
           <div>
             <label className="block text-sm font-medium mb-1">Class</label>
             <select
-              name="className"
-              value={formData.className}
+              name="userClass"
+              value={formData.userClass}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
@@ -251,8 +252,8 @@ export default function SignupForm() {
               Health Recommendations
             </label>
             <textarea
-              name="health"
-              value={formData.health}
+              name="medicalCondition"
+              value={formData.medicalCondition}
               onChange={handleChange}
               placeholder="Any health notes or recommendations"
               rows={3}
@@ -263,18 +264,18 @@ export default function SignupForm() {
           {/* Trainer */}
           <div>
             <label className="block text-sm font-medium mb-1">Trainer</label>
-            {prefillTrainer ? (
+            {prefilltrainerId ? (
               <input
                 type="text"
-                name="trainer"
-                value={formData.trainer}
+                name="trainerId"
+                value={formData.trainerId}
                 readOnly
                 className="w-full px-3 py-2 border rounded-md bg-gray-100 text-gray-600"
               />
             ) : (
               <select
-                name="trainer"
-                value={formData.trainer}
+                name="trainerId"
+                value={formData.trainerId}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
               >
@@ -287,7 +288,7 @@ export default function SignupForm() {
               </select>
             )}
             {errors.trainer && (
-              <p className="text-xs text-red-500">{errors.trainer}</p>
+              <p className="text-xs text-red-500">{errors.trainerId}</p>
             )}
           </div>
           {/* Gender */}
@@ -296,8 +297,8 @@ export default function SignupForm() {
               Membership Type
             </label>
             <select
-              name="member"
-              value={formData.member}
+              name="membership"
+              value={formData.membership}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
