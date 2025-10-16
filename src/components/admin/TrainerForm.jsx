@@ -27,6 +27,7 @@ export default function TrainerForm({
     "increase flexibility",
     "general fitness",
   ];
+
   const categories = [
     "dance fitness",
     "zumba fusion",
@@ -41,6 +42,7 @@ export default function TrainerForm({
     "cardio blast",
   ];
 
+  // Prefill form if editing
   useEffect(() => {
     if (editData) {
       setFormData({
@@ -49,9 +51,11 @@ export default function TrainerForm({
         goal: editData.goal || "",
         medicalCondition: editData.medicalCondition || "",
         userClass: editData.userClass || "",
+        role: "trainer",
+        password: "",
       });
-      setStatus(null);
       setErrors({});
+      setStatus(null);
     } else {
       setFormData({
         fullName: "",
@@ -59,7 +63,11 @@ export default function TrainerForm({
         goal: "",
         medicalCondition: "",
         userClass: "",
+        role: "trainer",
+        password: "",
       });
+      setErrors({});
+      setStatus(null);
     }
   }, [editData]);
 
@@ -69,30 +77,34 @@ export default function TrainerForm({
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email))
       e.email = "Invalid email";
     if (!formData.userClass) e.userClass = "Please select a category";
+    if (!formData.goal) e.goal = "Please select a goal";
     if (!formData.password && !editData)
       e.password = "Password is required for new trainers";
-    if (!formData.goal) e.goal = "Please select a goal";
     return e;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
-    setErrors((p) => ({ ...p, [name]: undefined }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
     setStatus(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus(null);
     const eObj = validate();
     if (Object.keys(eObj).length) return setErrors(eObj);
 
     setSaving(true);
+    setStatus(null);
+
     try {
+      // Prepare payload
       const payload = { ...formData };
+      if (editData && !payload.password) delete payload.password; // don't overwrite password if empty
+
       const url = editData
-        ? `/api/auth/signup${encodeURIComponent(editData._id || editData.id)}`
+        ? `/api/auth/signup/${encodeURIComponent(editData._id || editData.id)}`
         : "/api/auth/signup";
       const method = editData ? "PUT" : "POST";
 
@@ -105,20 +117,24 @@ export default function TrainerForm({
       const json = await res.json().catch(() => null);
 
       if (!res.ok) {
-        if (json?.errors && typeof json.errors === "object")
-          setErrors((p) => ({ ...p, ...json.errors }));
-        else
+        if (json?.errors && typeof json.errors === "object") {
+          setErrors((prev) => ({ ...prev, ...json.errors }));
+        } else {
           setStatus({
             type: "error",
             text: json?.message || `Request failed (${res.status})`,
           });
+        }
         return;
       }
 
       setStatus({
         type: "success",
-        text: editData ? "Trainer updated." : "Trainer created.",
+        text: editData
+          ? "Trainer updated successfully!"
+          : "Trainer created successfully!",
       });
+
       onSuccess(json);
     } catch (err) {
       setStatus({ type: "error", text: err?.message || "Network error" });
@@ -158,7 +174,7 @@ export default function TrainerForm({
           name="fullName"
           value={formData.fullName}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border rounded-md"
           placeholder="Full name"
         />
         {errors.fullName && (
@@ -180,6 +196,8 @@ export default function TrainerForm({
           <p className="text-xs text-red-500 mt-1">{errors.email}</p>
         )}
       </div>
+
+      {/* Password */}
       <div>
         <label className="block text-sm font-medium mb-1">Password</label>
         <input
@@ -188,7 +206,9 @@ export default function TrainerForm({
           value={formData.password || ""}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-md"
-          placeholder="Enter password"
+          placeholder={
+            editData ? "Leave empty to keep current password" : "Enter password"
+          }
         />
         {errors.password && (
           <p className="text-xs text-red-500 mt-1">{errors.password}</p>
@@ -204,9 +224,7 @@ export default function TrainerForm({
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-md bg-white"
         >
-          <option value="" style={{ backgroundColor: "#60A5FA" }}>
-            -- Select Goal --
-          </option>
+          <option value="">-- Select Goal --</option>
           {goals.map((g) => (
             <option key={g} value={g}>
               {g}
@@ -227,9 +245,7 @@ export default function TrainerForm({
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-md bg-white"
         >
-          <option value="" style={{ backgroundColor: "#60A5FA" }}>
-            -- Select Category --
-          </option>
+          <option value="">-- Select Category --</option>
           {categories.map((c) => (
             <option key={c} value={c}>
               {c}
@@ -259,14 +275,14 @@ export default function TrainerForm({
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-md border"
+          className="px-4 py-2 border rounded-md"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 rounded-md bg-prestigeTeal text-white"
+          className="px-4 py-2 bg-prestigeTeal text-white rounded-md"
         >
           {saving
             ? editData
