@@ -75,7 +75,7 @@ export default function AdminDashboard() {
   const handleDelete = async (type, id) => {
     if (!confirm("Are you sure you want to delete this record?")) return;
     try {
-      const res = await fetch(`/api/admin/delete-${type}/${id}`, {
+      const res = await fetch(`/api/users/{id}-${type}/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Delete failed");

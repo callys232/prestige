@@ -1,4 +1,3 @@
-// src/components/admin/TrainerForm.jsx
 "use client";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -9,58 +8,70 @@ export default function TrainerForm({
   onCancel = () => {},
 }) {
   const [formData, setFormData] = useState({
-    trainerName: "",
+    fullName: "",
     email: "",
-    phone: "",
-    specialty: "",
-    bio: "",
-    category: "",
+    password: "",
+    goal: "",
+    medicalCondition: "",
+    userClass: "",
+    role: "trainer",
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
 
+  const goals = [
+    "build muscle",
+    "lose weight",
+    "improve endurance",
+    "increase flexibility",
+    "general fitness",
+  ];
   const categories = [
-    "Strength",
-    "Cardio",
-    "Flexibility",
-    "Kids",
-    "Dance",
-    "HIIT",
-    "Endurance",
-    "General",
+    "dance fitness",
+    "zumba fusion",
+    "afro dance burn",
+    "kid fitness",
+    "junior bootcamp",
+    "mini movers",
+    "muscle marathon",
+    "endurance builder",
+    "hiit express",
+    "press to burn",
+    "cardio blast",
   ];
 
   useEffect(() => {
     if (editData) {
       setFormData({
-        trainerName: editData.trainerName || editData.name || "",
+        fullName: editData.fullName || editData.name || "",
         email: editData.email || "",
-        phone: editData.phone || "",
-        specialty: editData.specialty || "",
-        bio: editData.bio || "",
-        category: editData.category || "",
+        goal: editData.goal || "",
+        medicalCondition: editData.medicalCondition || "",
+        userClass: editData.userClass || "",
       });
       setStatus(null);
       setErrors({});
     } else {
       setFormData({
-        trainerName: "",
+        fullName: "",
         email: "",
-        phone: "",
-        specialty: "",
-        bio: "",
-        category: "",
+        goal: "",
+        medicalCondition: "",
+        userClass: "",
       });
     }
   }, [editData]);
 
   const validate = () => {
     const e = {};
-    if (!formData.trainerName.trim()) e.trainerName = "Name is required";
+    if (!formData.fullName.trim()) e.fullName = "Name is required";
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email))
       e.email = "Invalid email";
-    if (!formData.category) e.category = "Please select a category";
+    if (!formData.userClass) e.userClass = "Please select a category";
+    if (!formData.password && !editData)
+      e.password = "Password is required for new trainers";
+    if (!formData.goal) e.goal = "Please select a goal";
     return e;
   };
 
@@ -72,20 +83,17 @@ export default function TrainerForm({
   };
 
   const handleSubmit = async (e) => {
-    e?.preventDefault();
+    e.preventDefault();
     setStatus(null);
     const eObj = validate();
-    if (Object.keys(eObj).length) {
-      setErrors(eObj);
-      return;
-    }
+    if (Object.keys(eObj).length) return setErrors(eObj);
 
     setSaving(true);
     try {
       const payload = { ...formData };
       const url = editData
-        ? `/api/trainers/${encodeURIComponent(editData._id || editData.id)}`
-        : "/api/trainers";
+        ? `/api/auth/signup${encodeURIComponent(editData._id || editData.id)}`
+        : "/api/auth/signup";
       const method = editData ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -97,14 +105,13 @@ export default function TrainerForm({
       const json = await res.json().catch(() => null);
 
       if (!res.ok) {
-        if (json?.errors && typeof json.errors === "object") {
+        if (json?.errors && typeof json.errors === "object")
           setErrors((p) => ({ ...p, ...json.errors }));
-        } else {
+        else
           setStatus({
             type: "error",
             text: json?.message || `Request failed (${res.status})`,
           });
-        }
         return;
       }
 
@@ -144,83 +151,102 @@ export default function TrainerForm({
         )}
       </div>
 
+      {/* Name */}
       <div>
         <label className="block text-sm font-medium mb-1">Name</label>
         <input
-          name="trainerName"
-          value={formData.trainerName}
+          name="fullName"
+          value={formData.fullName}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
           placeholder="Full name"
         />
-        {errors.trainerName && (
-          <p className="text-xs text-red-500 mt-1">{errors.trainerName}</p>
+        {errors.fullName && (
+          <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md"
-            placeholder="email@example.com"
-          />
-          {errors.email && (
-            <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Phone</label>
-          <input
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md"
-            placeholder="+234 800 000 0000"
-          />
-        </div>
-      </div>
-
+      {/* Email */}
       <div>
-        <label className="block text-sm font-medium mb-1">Specialty</label>
+        <label className="block text-sm font-medium mb-1">Email</label>
         <input
-          name="specialty"
-          value={formData.specialty}
+          name="email"
+          value={formData.email}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-md"
-          placeholder="e.g., Strength training, Yoga"
+          placeholder="email@example.com"
         />
+        {errors.email && (
+          <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+        )}
+      </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Password</label>
+        <input
+          type="password"
+          name="password"
+          value={formData.password || ""}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-md"
+          placeholder="Enter password"
+        />
+        {errors.password && (
+          <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+        )}
       </div>
 
+      {/* Goal */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Goal</label>
+        <select
+          name="goal"
+          value={formData.goal}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-md bg-white"
+        >
+          <option value="" style={{ backgroundColor: "#60A5FA" }}>
+            -- Select Goal --
+          </option>
+          {goals.map((g) => (
+            <option key={g} value={g}>
+              {g}
+            </option>
+          ))}
+        </select>
+        {errors.goal && (
+          <p className="text-xs text-red-500 mt-1">{errors.goal}</p>
+        )}
+      </div>
+
+      {/* Category */}
       <div>
         <label className="block text-sm font-medium mb-1">Category</label>
         <select
-          name="category"
-          value={formData.category}
+          name="userClass"
+          value={formData.userClass}
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md bg-blue"
+          className="w-full px-3 py-2 border rounded-md bg-white"
         >
-          <option className="bg-blue">-- Select category --</option>
+          <option value="" style={{ backgroundColor: "#60A5FA" }}>
+            -- Select Category --
+          </option>
           {categories.map((c) => (
             <option key={c} value={c}>
               {c}
             </option>
           ))}
         </select>
-        {errors.category && (
-          <p className="text-xs text-red-500 mt-1">{errors.category}</p>
+        {errors.userClass && (
+          <p className="text-xs text-red-500 mt-1">{errors.userClass}</p>
         )}
       </div>
 
+      {/* About */}
       <div>
         <label className="block text-sm font-medium mb-1">About trainer</label>
         <textarea
-          name="bio"
-          value={formData.bio}
+          name="medicalCondition"
+          value={formData.medicalCondition}
           onChange={handleChange}
           rows={4}
           className="w-full px-3 py-2 border rounded-md"
@@ -228,6 +254,7 @@ export default function TrainerForm({
         />
       </div>
 
+      {/* Buttons */}
       <div className="flex justify-end gap-2">
         <button
           type="button"
