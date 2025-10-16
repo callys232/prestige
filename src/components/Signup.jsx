@@ -37,22 +37,24 @@ export default function SignupForm() {
 
   const trainers = ["Coach Aisha", "Coach David", "Coach Emeka", "Coach Grace"];
   const goals = [
-    "Build Muscle",
-    "Lose Weight",
-    "Improve Endurance",
-    "Increase Flexibility",
-    "General Fitness",
+    "build muscle",
+    "lose weight",
+    "improve endurance",
+    "increase flexibility",
+    "general fitness",
   ];
   const classes = [
-    "Dance Fitness",
-    "Zumba Fusion",
-    "Kids Fitness",
-    "Mini Movers",
-    "Muscle Marathon",
-    "Cardio Blast",
-    "Press-to-Burn",
-    "HiiT Express",
-    "Endurance Builder",
+    "dance fitness",
+    "zumba fusion",
+    "afro dance burn",
+    "kid fitness",
+    "junior bootcamp",
+    "mini movers",
+    "muscle marathon",
+    "endurance builder",
+    "hiit express",
+    "press to burn",
+    "cardio blast",
   ];
 
   const validate = () => {
@@ -91,6 +93,8 @@ export default function SignupForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      console.log(formData);
+
       const json = await res.json().catch(() => null);
 
       if (!res.ok) {
@@ -195,10 +199,10 @@ export default function SignupForm() {
               className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-- Select Gender --</option>
-              <option value="Female">Female</option>
-              <option value="Male">Male</option>
-              <option value="Non-binary">Non-binary</option>
-              <option value="Prefer not to say">Prefer not to say</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+
+              <option value="other">other</option>
             </select>
             {errors.gender && (
               <p className="text-xs text-red-500">{errors.gender}</p>
@@ -303,9 +307,9 @@ export default function SignupForm() {
               className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-- Select Membership</option>
-              <option value="Basic">Basic</option>
-              <option value="Premuim">Premuim</option>
-              <option value="Elite">Elite</option>
+              <option value="basic">Basic</option>
+              <option value="premuim">Premuim</option>
+              <option value="elite">Elite</option>
             </select>
             {errors.Membership && (
               <p className="text-xs text-red-500">{errors.Membership}</p>
