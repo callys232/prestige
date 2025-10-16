@@ -7,6 +7,7 @@ export default function UserForm({ section = "User Management", onSuccess }) {
     username: "",
     fullName: "",
     email: "",
+    gender: "",
     password: "",
     membership: "",
     trainerId: "68bab26c86e2ecf4a6f51e9b",
@@ -83,10 +84,11 @@ export default function UserForm({ section = "User Management", onSuccess }) {
     setFormData({
       username: "",
       fullName: "",
+      email: "",
+      gender: "",
       password: "",
       membership: "",
       trainerId: "",
-      // trainerName: "",
       goal: "",
       userClass: "",
       medicalCondition: "",
@@ -101,18 +103,18 @@ export default function UserForm({ section = "User Management", onSuccess }) {
     setSubmitting(true);
     setStatus(null);
 
-    // ✅ Basic Validation
     const newErrors = {};
     if (section === "User Management") {
       if (!formData.fullName.trim())
         newErrors.fullName = "Full name is required";
-
-      if (!formData.username.trim()) newErrors.username = "Name is required";
+      if (!formData.username.trim())
+        newErrors.username = "Username is required";
       if (!formData.password.trim())
         newErrors.password = "Password is required";
       if (!formData.email.trim()) newErrors.email = "Email is required";
       else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email))
         newErrors.email = "Invalid email address";
+      if (!formData.gender.trim()) newErrors.gender = "Gender is required";
       if (!formData.membership)
         newErrors.membership = "Membership type is required";
       if (!formData.goal) newErrors.goal = "Please select a goal";
@@ -139,16 +141,14 @@ export default function UserForm({ section = "User Management", onSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      console.log(formData);
+
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Save failed");
 
       setStatus({ type: "success", text: result.message || "Saved!" });
       resetForm();
-
       if (firstFieldRef.current) firstFieldRef.current.focus();
       window.scrollTo({ top: 0, behavior: "smooth" });
-
       if (onSuccess) onSuccess();
     } catch (err) {
       setStatus({
@@ -166,291 +166,274 @@ export default function UserForm({ section = "User Management", onSuccess }) {
         {section}
       </h2>
 
-      {/* User Management Form */}
+      {/* Scrollable Form */}
       {section === "User Management" && (
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-          aria-label="Add member form"
-        >
-          {/* Full Name */}
-          <label htmlFor="fullName" className="block">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Full Name
-            </span>
-            <input
-              id="fullName"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="e.g., prestige gym"
-              disabled={submitting}
-              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.fullName && (
-              <p className="text-xs text-red-500">{errors.fullName}</p>
-            )}
-          </label>
-          {/* Username */}
-          <label htmlFor="username" className="block">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              user name
-            </span>
-            <input
-              id="username"
-              ref={firstFieldRef}
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="e.g., John Doe"
-              disabled={submitting}
-              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.username && (
-              <p className="text-xs text-red-500">{errors.username}</p>
-            )}
-          </label>
-          {/* Email */}
-          <label htmlFor="email" className="block">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Email Address
-            </span>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="e.g., prestigeuser@gmail"
-              disabled={submitting}
-              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.email && (
-              <p className="text-xs text-red-500">{errors.email}</p>
-            )}
-          </label>
-
-          {/* Password */}
-          <label htmlFor="password" className="block relative">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Password
-            </span>
-            <input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Choose a strong password"
-              disabled={submitting}
-              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md pr-16 focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-9 text-xs text-gray-500"
-              tabIndex={-1}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-            {passwordStrength && (
-              <p
-                className={`text-xs mt-1 ${
-                  passwordStrength === "Weak"
-                    ? "text-red-500"
-                    : passwordStrength === "Medium"
-                    ? "text-yellow-600"
-                    : "text-green-600"
-                }`}
-              >
-                Strength: {passwordStrength}
-              </p>
-            )}
-            {errors.password && (
-              <p className="text-xs text-red-500">{errors.password}</p>
-            )}
-          </label>
-
-          {/* Membership Type */}
-          <label htmlFor="membership" className="block">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Membership Type
-            </span>
-            <select
-              id="membership"
-              name="membership"
-              value={formData.membership}
-              onChange={handleChange}
-              disabled={submitting}
-              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select membership</option>
-              <option value="basic">Basic</option>
-              <option value="premium">Premium</option>
-              <option value="elite">Elite</option>
-            </select>
-            {errors.membership && (
-              <p className="text-xs text-red-500">{errors.membership}</p>
-            )}
-          </label>
-
-          {/* Fitness Goal */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Fitness Goal
-            </label>
-            <select
-              name="goal"
-              value={formData.goal}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">-- Select Goal --</option>
-              {goals.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-            {errors.goal && (
-              <p className="text-xs text-red-500">{errors.goal}</p>
-            )}
-          </div>
-
-          {/* Class */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Class</label>
-            <select
-              name="userClass"
-              value={formData.userClass}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">-- Select Class --</option>
-              {classes.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            {errors.className && (
-              <p className="text-xs text-red-500">{errors.userClass}</p>
-            )}
-          </div>
-
-          {/* Health Recommendations */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Health Recommendations
-            </label>
-            <textarea
-              name="medicalCondition"
-              value={formData.medicalCondition}
-              onChange={handleChange}
-              placeholder="Any health notes or recommendations"
-              rows={3}
-              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          {/* Assigned Trainer */}
-          <label htmlFor="assignedTrainer" className="block">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Assigned Trainer
-            </span>
-            <div className="mt-1">
-              <select
-                id="trainerId"
-                name="trainerId"
-                value={formData.trainerId}
+        <div className="max-h-[600px] overflow-y-auto pr-2">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            aria-label="Add member form"
+          >
+            {/* Full Name */}
+            <label htmlFor="fullName" className="block">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Full Name
+              </span>
+              <input
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
                 onChange={handleChange}
-                disabled={loadingTrainers || submitting}
-                className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., prestige gym"
+                disabled={submitting}
+                className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.fullName && (
+                <p className="text-xs text-red-500">{errors.fullName}</p>
+              )}
+            </label>
+
+            {/* Username */}
+            <label htmlFor="username" className="block">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Username
+              </span>
+              <input
+                id="username"
+                ref={firstFieldRef}
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="e.g., John Doe"
+                disabled={submitting}
+                className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.username && (
+                <p className="text-xs text-red-500">{errors.username}</p>
+              )}
+            </label>
+
+            {/* Email */}
+            <label htmlFor="email" className="block">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Email Address
+              </span>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="e.g., prestigeuser@gmail"
+                disabled={submitting}
+                className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.email && (
+                <p className="text-xs text-red-500">{errors.email}</p>
+              )}
+            </label>
+
+            {/* Password */}
+            <label htmlFor="password" className="block relative">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Password
+              </span>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Choose a strong password"
+                disabled={submitting}
+                className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md pr-16 focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-9 text-xs text-gray-500"
+                tabIndex={-1}
               >
-                <option value="">No trainer</option>
-                {trainers.map((t) => (
-                  <option key={t._id} value={t._id}>
-                    {t.name}
+                {showPassword ? "Hide" : "Show"}
+              </button>
+              {passwordStrength && (
+                <p
+                  className={`text-xs mt-1 ${
+                    passwordStrength === "Weak"
+                      ? "text-red-500"
+                      : passwordStrength === "Medium"
+                      ? "text-yellow-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  Strength: {passwordStrength}
+                </p>
+              )}
+              {errors.password && (
+                <p className="text-xs text-red-500">{errors.password}</p>
+              )}
+            </label>
+
+            {/* Gender */}
+            <label htmlFor="gender" className="block">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Gender
+              </span>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                disabled={submitting}
+                className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.gender && (
+                <p className="text-xs text-red-500">{errors.gender}</p>
+              )}
+            </label>
+
+            {/* Membership */}
+            <label htmlFor="membership" className="block">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Membership Type
+              </span>
+              <select
+                id="membership"
+                name="membership"
+                value={formData.membership}
+                onChange={handleChange}
+                disabled={submitting}
+                className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select membership</option>
+                <option value="basic">Basic</option>
+                <option value="premium">Premium</option>
+                <option value="elite">Elite</option>
+              </select>
+              {errors.membership && (
+                <p className="text-xs text-red-500">{errors.membership}</p>
+              )}
+            </label>
+
+            {/* Fitness Goal */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Fitness Goal
+              </label>
+              <select
+                name="goal"
+                value={formData.goal}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">-- Select Goal --</option>
+                {goals.map((g) => (
+                  <option key={g} value={g}>
+                    {g}
                   </option>
                 ))}
               </select>
-              {loadingTrainers && (
-                <p className="text-xs text-gray-400 mt-1">
-                  Loading trainers...
-                </p>
+              {errors.goal && (
+                <p className="text-xs text-red-500">{errors.goal}</p>
               )}
             </div>
-          </label>
 
-          {/* Buttons */}
-          <div className="flex gap-3 items-center">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="bg-prestigeTeal text-white px-4 py-2 rounded-md hover:opacity-90 transition disabled:opacity-50"
-            >
-              {submitting ? "Saving..." : "Add Member"}
-            </button>
-            <button
-              type="button"
-              onClick={resetForm}
-              className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-50"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
+            {/* Class */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Class</label>
+              <select
+                name="userClass"
+                value={formData.userClass}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">-- Select Class --</option>
+                {classes.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              {errors.userClass && (
+                <p className="text-xs text-red-500">{errors.userClass}</p>
+              )}
+            </div>
+
+            {/* Health Recommendations */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Health Recommendations
+              </label>
+              <textarea
+                name="medicalCondition"
+                value={formData.medicalCondition}
+                onChange={handleChange}
+                placeholder="Any health notes or recommendations"
+                rows={3}
+                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+
+            {/* Assigned Trainer */}
+            <label htmlFor="assignedTrainer" className="block">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Assigned Trainer
+              </span>
+              <div className="mt-1">
+                <select
+                  id="trainerId"
+                  name="trainerId"
+                  value={formData.trainerId}
+                  onChange={handleChange}
+                  disabled={loadingTrainers || submitting}
+                  className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">No trainer</option>
+                  {trainers.map((t) => (
+                    <option key={t._id} value={t._id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+                {loadingTrainers && (
+                  <p className="text-xs text-gray-400 mt-1">
+                    Loading trainers...
+                  </p>
+                )}
+              </div>
+            </label>
+
+            {/* Buttons */}
+            <div className="flex gap-3 items-center">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="bg-prestigeTeal text-white px-4 py-2 rounded-md hover:opacity-90 transition disabled:opacity-50"
+              >
+                {submitting ? "Saving..." : "Add Member"}
+              </button>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-50"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
       )}
-
-      {/* Trainer Management Form
-      {section === "Trainer Management" && (
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-          aria-label="Add trainer form"
-        >
-          <label htmlFor="trainerName" className="block">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              Trainer Name
-            </span>
-            <input
-              id="trainerName"
-              name="trainerName"
-              value={formData.trainerName}
-              onChange={handleChange}
-              placeholder="e.g., Trainer Dave"
-              disabled={submitting}
-              className="w-full mt-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-md focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.trainerName && (
-              <p className="text-xs text-red-500">{errors.trainerName}</p>
-            )}
-          </label>
-
-          <div className="flex gap-3 items-center">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition disabled:opacity-50"
-            >
-              {submitting ? "Adding..." : "Add Trainer"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setFormData((p) => ({ ...p, trainerName: "" }))}
-              className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-50"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      )} */}
 
       {/* Bookings & Attendance Placeholder */}
       {section === "Bookings & Attendance" && (

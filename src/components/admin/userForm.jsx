@@ -16,7 +16,14 @@ export default function AdminDashboard() {
   const [formMode, setFormMode] = useState(null); // "user" | "trainer"
   const [editData, setEditData] = useState(null);
 
-  const colsForUsers = ["Name", "Membership", "Goal", "Class", "Trainer"];
+  const colsForUsers = [
+    "Name",
+    "Membership",
+    "Gender",
+    "Goal",
+    "Class",
+    "Trainer",
+  ];
   const colsForTrainers = ["Trainer", "ID"];
 
   // fetch both lists
@@ -27,12 +34,14 @@ export default function AdminDashboard() {
         fetch("/api/users?role=client"),
         fetch("/api/users?role=trainer"),
       ]);
+
       const [uJson, tJson] = await Promise.all([
-        uRes.json().catch(() => []),
-        tRes.json().catch(() => []),
+        uRes.json().catch(() => ({})),
+        tRes.json().catch(() => ({})),
       ]);
-      setUsers(Array.isArray(uJson) ? uJson : uJson.users || []);
-      setTrainers(Array.isArray(tJson) ? tJson : tJson.trainers || []);
+
+      setUsers(Array.isArray(uJson.data) ? uJson.data : []);
+      setTrainers(Array.isArray(tJson.data) ? tJson.data : []);
     } catch (err) {
       console.error("fetchData error:", err);
     } finally {
@@ -178,6 +187,7 @@ export default function AdminDashboard() {
                         <>
                           <td className="px-3 py-2">{it.username}</td>
                           <td className="px-3 py-2">{it.membership}</td>
+                          <td className="px-3 py-2">{it.gender}</td>
                           <td className="px-3 py-2">{it.goal}</td>
                           <td className="px-3 py-2">{it.userClass}</td>
                           <td className="px-3 py-2">
