@@ -3,17 +3,20 @@
 import { useState, useEffect } from "react";
 
 export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [membership, setMembership] = useState("");
-  const [gender, setGender] = useState("");
-  const [goal, setGoal] = useState("");
-  const [userClass, setUserClass] = useState("");
-  const [trainerId, setTrainerId] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    membership: "",
+    gender: "",
+    goal: "",
+    userClass: "",
+    trainerId: "",
+    role: "client",
+  });
 
   const [submitting, setSubmitting] = useState(false);
 
-  // Updated dropdown options
   const memberships = ["basic", "elite", "premium"];
   const goals = [
     "build muscle",
@@ -36,60 +39,74 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
     "cardio blast",
   ];
 
-  // Prefill fields when editing
+  // Prefill form if editing
   useEffect(() => {
     if (editData) {
-      setUsername(editData.username || "");
-      setEmail(editData.email || "");
-      setMembership(editData.membership || "");
-      setGender(editData.gender || "");
-      setGoal(editData.goal || "");
-      setUserClass(editData.userClass || "");
-      setTrainerId(editData.trainerId?._id || editData.trainerId || "");
+      setFormData({
+        fullName: editData.fullName || "",
+        email: editData.email || "",
+        password: "",
+        membership: editData.membership || "",
+        gender: editData.gender || "",
+        goal: editData.goal || "",
+        userClass: editData.userClass || "",
+        trainerId: editData.trainerId?._id || editData.trainerId || "",
+        role: "client",
+      });
     } else {
-      setUsername("");
-      setEmail("");
-      setMembership("");
-      setGender("");
-      setGoal("");
-      setUserClass("");
-      setTrainerId("");
+      setFormData({
+        fullName: "",
+        password: "",
+        email: "",
+        membership: "",
+        gender: "",
+        goal: "",
+        userClass: "",
+        trainerId: "",
+        role: "client",
+      });
     }
   }, [editData]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
+    // ✅ Log payload before sending
+    console.log("Submitting user payload:", formData);
+
     try {
       const method = editData ? "PATCH" : "POST";
-      const url = editData ? `/api/users/${editData._id}` : "/api/users";
-
-      const payload = {
-        username,
-        email,
-        membership,
-        gender,
-        goal,
-        userClass,
-        trainerId: trainerId || null,
-        role: "client",
-      };
+      const url = editData ? `/api/users/${editData._id}` : "/api/auth/signup";
 
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(formData),
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || "Failed to save user");
+        let errMsg = "Failed to save user";
+        try {
+          const errData = await res.json();
+          errMsg = errData.message || errMsg;
+        } catch (err) {
+          console.warn("Failed to parse error JSON:", err);
+        }
+        throw new Error(errMsg);
       }
 
-      onSuccess();
+      const responseData = await res.json().catch(() => null);
+      console.log("Server response:", responseData);
+
+      onSuccess(responseData);
     } catch (err) {
-      console.error(err);
+      console.error("Submission error:", err);
       alert(err.message);
     } finally {
       setSubmitting(false);
@@ -103,11 +120,12 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
       </h2>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Name</label>
+        <label className="block text-sm font-medium mb-1">Full Name</label>
         <input
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleChange}
           required
           className="w-full border rounded px-3 py-2"
         />
@@ -117,9 +135,21 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
         <label className="block text-sm font-medium mb-1">Email</label>
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
           required
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Password</label>
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required={!editData} // Password is required only when adding a new user
           className="w-full border rounded px-3 py-2"
         />
       </div>
@@ -128,8 +158,9 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
         <div>
           <label className="block text-sm font-medium mb-1">Membership</label>
           <select
-            value={membership}
-            onChange={(e) => setMembership(e.target.value)}
+            name="membership"
+            value={formData.membership}
+            onChange={handleChange}
             className="w-full border rounded px-3 py-2"
           >
             <option value="">Select Membership</option>
@@ -144,14 +175,15 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
         <div>
           <label className="block text-sm font-medium mb-1">Gender</label>
           <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
             className="w-full border rounded px-3 py-2"
           >
             <option value="">Select</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
           </select>
         </div>
       </div>
@@ -159,8 +191,9 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
       <div>
         <label className="block text-sm font-medium mb-1">Goal</label>
         <select
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
+          name="goal"
+          value={formData.goal}
+          onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >
           <option value="">Select Goal</option>
@@ -175,8 +208,9 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
       <div>
         <label className="block text-sm font-medium mb-1">Class</label>
         <select
-          value={userClass}
-          onChange={(e) => setUserClass(e.target.value)}
+          name="userClass"
+          value={formData.userClass}
+          onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >
           <option value="">Select Class</option>
@@ -191,14 +225,15 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
       <div>
         <label className="block text-sm font-medium mb-1">Trainer</label>
         <select
-          value={trainerId}
-          onChange={(e) => setTrainerId(e.target.value)}
+          name="trainerId"
+          // value={formData.trainerId}
+          onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >
           <option value="">Select Trainer</option>
           {trainers.map((t) => (
             <option key={t._id} value={t._id}>
-              {t.username || t.name}
+              {t.fullName || t.username || "—"}
             </option>
           ))}
         </select>

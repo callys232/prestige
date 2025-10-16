@@ -13,6 +13,7 @@ export default function TrainerForm({
     password: "",
     goal: "",
     medicalCondition: "",
+    // membership: "",
     userClass: "",
     role: "trainer",
   });
@@ -49,6 +50,7 @@ export default function TrainerForm({
         fullName: editData.fullName || editData.name || "",
         email: editData.email || "",
         goal: editData.goal || "",
+        // membership: editData.membership || "",
         medicalCondition: editData.medicalCondition || "",
         userClass: editData.userClass || "",
         role: "trainer",
@@ -61,6 +63,7 @@ export default function TrainerForm({
         fullName: "",
         email: "",
         goal: "",
+        // membership
         medicalCondition: "",
         userClass: "",
         role: "trainer",
@@ -131,8 +134,8 @@ export default function TrainerForm({
       setStatus({
         type: "success",
         text: editData
-          ? "Trainer updated successfully!"
-          : "Trainer created successfully!",
+          ? `${formData.fullName} updated successfully!`
+          : `${formData.fullName} created successfully!`,
       });
 
       onSuccess(json);

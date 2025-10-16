@@ -19,7 +19,7 @@ export default function SignupForm() {
     userClass: "",
     membership: "",
     medicalCondition: "",
-    trainerId: prefilltrainerId || "68bab26c86e2ecf4a6f51e9b",
+    trainerId: prefilltrainerId || "",
   });
 
   const [errors, setErrors] = useState({});

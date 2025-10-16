@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import UserForm from "./addUserForm";
@@ -32,12 +31,23 @@ export default function AdminDashboard() {
         fetch("/api/users?role=client"),
         fetch("/api/users?role=trainer"),
       ]);
+
       const uJson = await uRes.json();
       const tJson = await tRes.json();
-      setUsers(Array.isArray(uJson.data ?? uJson) ? uJson.data ?? uJson : []);
-      setTrainers(
-        Array.isArray(tJson.data ?? tJson) ? tJson.data ?? tJson : []
-      );
+
+      const clients = Array.isArray(uJson.data ?? uJson)
+        ? uJson.data ?? uJson
+        : [];
+      const trainersData = Array.isArray(tJson.data ?? tJson)
+        ? tJson.data ?? tJson
+        : [];
+
+      setUsers(clients);
+      setTrainers(trainersData);
+
+      // ✅ Log the actual fetched data, not state
+      console.log("Clients:", clients);
+      console.log("Trainers:", trainersData);
     } catch (err) {
       console.error("fetchData error:", err);
     } finally {
@@ -182,7 +192,7 @@ export default function AdminDashboard() {
                       {activeTab === "Users" ? (
                         <>
                           <td className="px-2 sm:px-3 py-1 sm:py-2">
-                            {it.username}
+                            {it.fullName}
                           </td>
                           <td className="px-2 sm:px-3 py-1 sm:py-2">
                             {it.membership}
@@ -197,13 +207,14 @@ export default function AdminDashboard() {
                             {it.userClass}
                           </td>
                           <td className="px-2 sm:px-3 py-1 sm:py-2">
-                            {it.trainerId?.name ?? "—"}
+                            {trainers.find((t) => t._id === it.trainerId)
+                              ?.fullName ?? "—"}
                           </td>
                         </>
                       ) : (
                         <>
                           <td className="px-2 sm:px-3 py-1 sm:py-2">
-                            {it.trainerId}
+                            {it.fullName}
                           </td>
                           <td className="px-2 sm:px-3 py-1 sm:py-2">
                             {it._id || it.id}
@@ -259,7 +270,7 @@ export default function AdminDashboard() {
                     <>
                       <div>
                         <span className="font-semibold">Name:</span>{" "}
-                        {it.username}
+                        {it.fullName}
                       </div>
                       <div>
                         <span className="font-semibold">Membership:</span>{" "}
@@ -278,14 +289,15 @@ export default function AdminDashboard() {
                       </div>
                       <div>
                         <span className="font-semibold">Trainer:</span>{" "}
-                        {it.trainerId?.name ?? "—"}
+                        {trainers.find((t) => t._id === it.trainerId)
+                          ?.fullName ?? "—"}
                       </div>
                     </>
                   ) : (
                     <>
                       <div>
                         <span className="font-semibold">Trainer:</span>{" "}
-                        {it.trainerId}
+                        {it.fullName}
                       </div>
                       <div>
                         <span className="font-semibold">ID:</span>{" "}
@@ -342,14 +354,10 @@ export default function AdminDashboard() {
                 >
                   <div className="flex flex-col sm:flex-row sm:gap-2">
                     <div className="text-sm sm:text-base font-medium">
-                      {activeTab === "Users"
-                        ? item.trainerName || item.name
-                        : item.username || item.name}
+                      {item.fullName}
                     </div>
                     <div className="text-xs sm:text-sm text-gray-500">
-                      {activeTab === "Users"
-                        ? item.specialty || ""
-                        : item.email || ""}
+                      {item.email || ""}
                     </div>
                   </div>
                 </div>
