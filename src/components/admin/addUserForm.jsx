@@ -42,8 +42,12 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
   // Prefill form if editing
   useEffect(() => {
     if (editData) {
+      const fullName = `${editData.firstName || ""} ${
+        editData.lastName || ""
+      }`.trim();
+      console.log("Computed fullName:", fullName);
       setFormData({
-        fullName: editData.fullName || "",
+        fullName,
         email: editData.email || "",
         password: "",
         membership: editData.membership || "",
@@ -226,7 +230,7 @@ export default function UserForm({ editData, trainers, onSuccess, onCancel }) {
         <label className="block text-sm font-medium mb-1">Trainer</label>
         <select
           name="trainerId"
-          // value={formData.trainerId}
+          value={formData.trainerId}
           onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >

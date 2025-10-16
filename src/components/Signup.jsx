@@ -10,6 +10,8 @@ export default function SignupForm() {
   const prefilluserClass = searchParams.get("userClass") || "";
   const prefilltrainerId = searchParams.get("trainerId") || "";
 
+  const [trainers, setTrainers] = useState([]); // ✅ lowercase variable name
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -27,6 +29,27 @@ export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // ✅ Fetch trainers dynamically
+  useEffect(() => {
+    async function fetchTrainers() {
+      try {
+        const res = await fetch("/api/users?role=trainer");
+        const json = await res.json();
+
+        if (res.ok && json.success) {
+          setTrainers(json.data || []);
+        } else {
+          console.error("Failed to fetch trainers:", json.message);
+        }
+      } catch (err) {
+        console.error("Error fetching trainers:", err);
+      }
+    }
+
+    fetchTrainers();
+  }, []);
+
+  // ✅ Prefill URL params
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -35,7 +58,6 @@ export default function SignupForm() {
     }));
   }, [prefilluserClass, prefilltrainerId]);
 
-  const trainers = ["Coach Aisha", "Coach David", "Coach Emeka", "Coach Grace"];
   const goals = [
     "build muscle",
     "lose weight",
@@ -43,6 +65,7 @@ export default function SignupForm() {
     "increase flexibility",
     "general fitness",
   ];
+
   const classes = [
     "dance fitness",
     "zumba fusion",
@@ -57,6 +80,7 @@ export default function SignupForm() {
     "cardio blast",
   ];
 
+  // ✅ Validation
   const validate = () => {
     const newErrors = {};
     if (!formData.fullName.trim()) newErrors.fullName = "Name is required";
@@ -69,6 +93,7 @@ export default function SignupForm() {
     return newErrors;
   };
 
+  // ✅ Handle inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -76,6 +101,7 @@ export default function SignupForm() {
     setServerError("");
   };
 
+  // ✅ Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerError("");
@@ -84,22 +110,19 @@ export default function SignupForm() {
       setErrors(newErrors);
       return;
     }
-    setErrors({});
-    setLoading(true);
 
+    setLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      console.log(formData);
 
       const json = await res.json().catch(() => null);
 
       if (!res.ok) {
         const message = json?.message || "Signup failed";
-        // If backend returns field errors object, merge them
         if (json?.errors && typeof json.errors === "object") {
           setErrors((prev) => ({ ...prev, ...json.errors }));
         } else {
@@ -108,7 +131,6 @@ export default function SignupForm() {
         return;
       }
 
-      // success -> redirect to login with a query flag
       window.location.href = "/login?registered=1";
     } catch (err) {
       setServerError(err?.message || "Network error");
@@ -117,6 +139,7 @@ export default function SignupForm() {
     }
   };
 
+  // ✅ Form UI
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
       <motion.div
@@ -130,10 +153,9 @@ export default function SignupForm() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Server error */}
           {serverError && <p className="text-sm text-red-600">{serverError}</p>}
 
-          {/* Name */}
+          {/* Full Name */}
           <div>
             <label className="block text-sm font-medium mb-1">Full Name</label>
             <input
@@ -201,15 +223,14 @@ export default function SignupForm() {
               <option value="">-- Select Gender --</option>
               <option value="female">Female</option>
               <option value="male">Male</option>
-
-              <option value="other">other</option>
+              <option value="other">Other</option>
             </select>
             {errors.gender && (
               <p className="text-xs text-red-500">{errors.gender}</p>
             )}
           </div>
 
-          {/* Fitness Goal */}
+          {/* Goal */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Fitness Goal
@@ -250,7 +271,7 @@ export default function SignupForm() {
             </select>
           </div>
 
-          {/* Health Recommendations */}
+          {/* Medical Condition */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Health Recommendations
@@ -284,18 +305,23 @@ export default function SignupForm() {
                 className="w-full px-3 py-2 border rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">-- Choose a Trainer --</option>
-                {trainers.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
+                {trainers.length > 0 ? (
+                  trainers.map((trainer) => (
+                    <option key={trainer._id} value={trainer._id}>
+                      {trainer.fullName || trainer.username || trainer.email}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading trainers...</option>
+                )}
               </select>
             )}
-            {errors.trainer && (
+            {errors.trainerId && (
               <p className="text-xs text-red-500">{errors.trainerId}</p>
             )}
           </div>
-          {/* Gender */}
+
+          {/* Membership */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Membership Type
@@ -308,13 +334,14 @@ export default function SignupForm() {
             >
               <option value="">-- Select Membership</option>
               <option value="basic">Basic</option>
-              <option value="premuim">Premuim</option>
+              <option value="premium">Premium</option>
               <option value="elite">Elite</option>
             </select>
-            {errors.Membership && (
-              <p className="text-xs text-red-500">{errors.Membership}</p>
+            {errors.membership && (
+              <p className="text-xs text-red-500">{errors.membership}</p>
             )}
           </div>
+
           {/* Submit */}
           <button
             type="submit"

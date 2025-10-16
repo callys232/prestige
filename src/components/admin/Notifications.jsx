@@ -142,11 +142,26 @@ export default function Notifications() {
     };
     setLoading(true);
     try {
-      const json = await safeFetchJson("/api/admin/notifications/send", {
+      const json = await safeFetchJson("/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          title: title.trim(),
+          message: body.trim(),
+          channel, // e.g. "email", "sms", "both"
+          schedule: sendAt ? sendAt : "now", // backend expects "now" or date string
+          audience:
+            audienceType === "all"
+              ? "all-users"
+              : audienceType === "segment"
+              ? "all-trainers" // adjust if needed
+              : audienceType === "userIds"
+              ? "user"
+              : "all-users",
+          id: audienceIds || undefined, // optional user/trainer ID
+        }),
       });
+
       setStatus({
         type: "success",
         text: json.message || "Notification scheduled/sent.",
@@ -432,20 +447,22 @@ export default function Notifications() {
                   onChange={(e) => setAudienceType(e.target.value)}
                   className="w-full border px-2 py-1 rounded"
                 >
-                  <option value="all">All users</option>
-                  <option value="segment">Segment (backend)</option>
-                  <option value="userIds">Specific user ids</option>
+                  <option value="all-users">All Users</option>
+                  <option value="all-trainers">All Trainers</option>
+                  <option value="user">Specific User</option>
+                  <option value="trainer">Specific Trainer</option>
                 </select>
               </label>
             </div>
-            {audienceType === "userIds" && (
+            {(audienceType === "user" || audienceType === "trainer") && (
               <input
                 value={audienceIds}
                 onChange={(e) => setAudienceIds(e.target.value)}
-                placeholder="Comma separated user ids"
+                placeholder="Enter User or Trainer ID"
                 className="w-full border px-2 py-1 rounded"
               />
             )}
+
             <div className="flex gap-2 items-center">
               <label className="flex-1">
                 Schedule (optional)
