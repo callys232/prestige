@@ -39,6 +39,7 @@
     "react-masonry-css": "^1.0.16",
     "react-typed": "^2.0.12",
     "swiper": "^12.0.2",
+    "twilio": "^5.10.3",
     "uuid": "^11.1.0",
     "zod": "^3.25.67",
     "zustand": "^5.0.6"
@@ -60,6 +61,7 @@
     "@types/puppeteer": "^5.4.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/twilio": "^3.19.2",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
