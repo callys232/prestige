@@ -1,10 +1,11 @@
 import Verify from "../../components/admin/verify";
+import { Suspense } from "react";
 
 const TrainersPage = () => {
   return (
-    <div className="bg-white dark:bg-gray-900">
+    <Suspense fallback={<div>Loading verification...</div>}>
       <Verify />
-    </div>
+    </Suspense>
   );
 };
 
