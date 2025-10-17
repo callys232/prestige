@@ -131,7 +131,9 @@ export default function SignupForm() {
         return;
       }
 
-      window.location.href = "/login?registered=1";
+      window.location.href = `/verify?email=${encodeURIComponent(
+        formData.email
+      )}`;
     } catch (err) {
       setServerError(err?.message || "Network error");
     } finally {

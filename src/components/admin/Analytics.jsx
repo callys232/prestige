@@ -80,7 +80,7 @@ export default function AnalyticsPage() {
         membershipType: filters.membershipType,
         trainerId: filters.trainerId,
       });
-      const res = await fetch(`/api/admin/analytics?${params.toString()}`);
+      const res = await fetch(`/api/analytics/members?${params.toString()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setKpis(data.kpis);
