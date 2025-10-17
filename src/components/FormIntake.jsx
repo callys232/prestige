@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const Footer = () => {
+const IntakeForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -11,20 +11,17 @@ const Footer = () => {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
     setError("");
   };
 
-  const validatePhone = (phone) => {
-    const regex = /^(?:\+234|0)[789][01]\d{8}$/;
-    return regex.test(phone);
-  };
+  const validatePhone = (phone) => /^(?:\+234|0)[789][01]\d{8}$/.test(phone);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { name, phone, program } = formData;
 
     if (!name || !phone || !program) {
@@ -39,22 +36,35 @@ const Footer = () => {
       return;
     }
 
-    console.log("Form submitted:", formData);
-
-    setSuccess(true);
+    setLoading(true);
     setError("");
+    setSuccess(false);
 
-    setFormData({
-      name: "",
-      phone: "",
-      program: "",
-    });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, program }),
+      });
 
-    setTimeout(() => setSuccess(false), 3000);
+      const data = await res.json();
+
+      if (data.success) {
+        setSuccess(true);
+        setFormData({ name: "", phone: "", program: "" });
+        setTimeout(() => setSuccess(false), 4000);
+      } else {
+        setError(data.error || "Failed to send the form. Try again.");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <footer className="w-full px-6 py-12 text-red-800 bg-white dark:text-gray-100 relative overflow-hidden">
+    <div className="w-full px-6 py-12 text-red-800 bg-white dark:text-gray-100 relative overflow-hidden">
       {/* Success Popup */}
       {success && (
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-slide-up bg-green-600 text-white px-6 py-3 rounded shadow-lg z-50">
@@ -63,7 +73,6 @@ const Footer = () => {
       )}
 
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
-        {/* Error Message */}
         {error && (
           <div className="text-red-600 dark:text-red-400 font-medium">
             ⚠️ {error}
@@ -126,7 +135,6 @@ const Footer = () => {
             <option value="Dance & Cardio">Dance & Cardio</option>
           </select>
 
-          {/* Show selected program */}
           {formData.program && (
             <p className="mt-2 text-sm text-[#1F5C8E]">
               Selected: <strong>{formData.program}</strong>
@@ -138,14 +146,18 @@ const Footer = () => {
         <div>
           <button
             type="submit"
-            className="mt-4 px-8 py-3 bg-[#0652A6] text-white text-lg font-semibold rounded-md hover:bg-[#526591c5] transition duration-300"
+            disabled={loading}
+            className={`mt-4 px-8 py-3 text-lg font-semibold rounded-md transition duration-300 ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#0652A6] text-white hover:bg-[#526591c5]"
+            }`}
           >
-            Submit
+            {loading ? "Sending..." : "Submit"}
           </button>
         </div>
       </form>
 
-      {/* Animation styles */}
       <style jsx>{`
         @keyframes slide-up {
           0% {
@@ -165,8 +177,8 @@ const Footer = () => {
           animation: slide-up 0.5s ease-out forwards;
         }
       `}</style>
-    </footer>
+    </div>
   );
 };
 
-export default Footer;
+export default IntakeForm;

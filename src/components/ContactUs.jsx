@@ -5,12 +5,12 @@ import Link from "next/link";
 
 const Contact = () => {
   const [messageSent, setMessageSent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
-
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -18,6 +18,7 @@ const Contact = () => {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const validate = () => {
@@ -32,7 +33,7 @@ const Contact = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -40,11 +41,29 @@ const Contact = () => {
       return;
     }
 
-    setMessageSent(true);
-    setFormData({ name: "", email: "", message: "" });
+    setLoading(true);
     setErrors({});
+    try {
+      const res = await fetch("/api/contactus", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    setTimeout(() => setMessageSent(false), 4000);
+      const data = await res.json();
+
+      if (data.success) {
+        setMessageSent(true);
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setMessageSent(false), 4000);
+      } else {
+        setErrors({ form: data.error || "Failed to send message." });
+      }
+    } catch (err) {
+      setErrors({ form: "Something went wrong. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,20 +71,22 @@ const Contact = () => {
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-10">Get in Touch</h2>
 
-        {/* Info Section */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
+          {/* Info Section */}
           <div className="bg-blue-50 dark:bg-blue-950 rounded-xl shadow-md p-6">
             <h3 className="text-xl font-semibold mb-2">Visit Us</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
               Prestige Gym, 123 Strength Lane, Abuja, Nigeria
             </p>
             <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-              Mon–Sat: 6am – 9pm<br />
+              Mon–Sat: 6am – 9pm
+              <br />
               Sunday: 8am – 6pm
             </p>
             <h3 className="text-xl font-semibold mt-6 mb-2">Call or Email</h3>
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              📞 +234 800 123 4567<br />
+              📞 +234 800 123 4567
+              <br />
               📧 contact@prestigegym.com
             </p>
           </div>
@@ -76,6 +97,10 @@ const Contact = () => {
             className="bg-blue-50 dark:bg-blue-950 rounded-xl shadow-md p-6 space-y-4"
           >
             <h3 className="text-xl font-semibold mb-2">Send Us a Message</h3>
+
+            {errors.form && (
+              <p className="text-red-500 text-sm mb-2">{errors.form}</p>
+            )}
 
             {/* Name */}
             <div>
@@ -134,9 +159,14 @@ const Contact = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="px-6 py-2 bg-[#0B56A3] text-white rounded hover:bg-blue-800 transition"
+              disabled={loading}
+              className={`px-6 py-2 rounded transition ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#0B56A3] text-white hover:bg-blue-800"
+              }`}
             >
-              Send Message
+              {loading ? "Sending..." : "Send Message"}
             </button>
 
             {messageSent && (
@@ -147,7 +177,6 @@ const Contact = () => {
           </form>
         </div>
 
-        {/* CTA */}
         <div className="text-center">
           <Link
             href="/classes"
